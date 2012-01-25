@@ -18,7 +18,7 @@ def get_html(type, id) :
         : param id : id of protein
     """
     
-    pmidlist = [22268896,22269215]
+    pmidlist = '22268896,22269215'
     q = getArticles(pmidlist)
     html = GetArticleAsHTML(q, False);
     # Get the matching documentids
