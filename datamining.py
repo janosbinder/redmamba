@@ -23,7 +23,7 @@ def get_html(type, id) :
     pmidlist = '21779458 ,22002450'
     q = getArticles(pmidlist)
     
-    html = GetArticleAsHTML(q, True);
+    html = GetArticleAsHTML(q, False);
     # Get the matching documentids
     # call getArticles
     # call GetArticleAsHTML2
@@ -268,10 +268,11 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     
     return_val = {}
     
-    if CDATAWRAP:
-        return_val[tagname] = CDATAWrap( html )
-    else :
-        return_val[tagname] = html
+    return_val[tagname] = CDATAWrap( html )
+#    if CDATAWRAP:
+#        return_val[tagname] = CDATAWrap( html )
+#    else :
+#        return_val[tagname] = html
     
     return_val['ranked_sorting'] = ranked_sorting
     return_val['title_sorting'] = title_sorting
