@@ -107,10 +107,10 @@ def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
     el = etree.SubElement(custom_tags,'Ranked_sorting')
     el.text = ','.join(map(str, sorted_values))
     
-    for key, value in extra_tags.iteritems() :
-        el = etree.Element(key)
-        el.text = str(value) + ' '
-        custom_tags.append(el)
+#    for key, value in extra_tags.iteritems() :
+#        el = etree.Element(key)
+#        el.text = str(value) + ' '
+#        custom_tags.append(el)
     
     if CDATAWRAP :
         html = etree.tostring(custom_tags)
@@ -118,22 +118,22 @@ def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
         custom_tags.text = CDATAWrap( html )
     
     
-    pages = math.ceil(float(extra_tags['QuerySize'])/float(extra_tags['PageSize']))
-    prev_next_page_wrapper = etree.SubElement(root, 'PREV_NEXT_PAGE_HTML')
-    if extra_tags['PageNumber'] > 0 : 
-        a = etree.SubElement(prev_next_page_wrapper, 'a', {'href': "javascript:onChangePage('prev');"})
-        a.text = 'prev'
+#    pages = math.ceil(float(extra_tags['QuerySize'])/float(extra_tags['PageSize']))
+#    prev_next_page_wrapper = etree.SubElement(root, 'PREV_NEXT_PAGE_HTML')
+#    if extra_tags['PageNumber'] > 0 : 
+#        a = etree.SubElement(prev_next_page_wrapper, 'a', {'href': "javascript:onChangePage('prev');"})
+#        a.text = 'prev'
     
-    for i in range(min(5, int(pages))) :
-        attribs = {}
-        attribs['href'] = "javascript:onChangePage('{0}');".format(i)
-        if (i == extra_tags['PageNumber']) :
-            attribs['class'] = 'selected'
-        a = etree.SubElement(prev_next_page_wrapper, 'a', attribs)
-        a.text = str(i+1)
-    if extra_tags['PageNumber'] < pages-1 : 
-        a = etree.SubElement(prev_next_page_wrapper, 'a', {'href': "javascript:onChangePage('next');"})
-        a.text = 'next'
+#    for i in range(min(5, int(pages))) :
+#        attribs = {}
+#        attribs['href'] = "javascript:onChangePage('{0}');".format(i)
+#        if (i == extra_tags['PageNumber']) :
+#            attribs['class'] = 'selected'
+#        a = etree.SubElement(prev_next_page_wrapper, 'a', attribs)
+#        a.text = str(i+1)
+#    if extra_tags['PageNumber'] < pages-1 : 
+#        a = etree.SubElement(prev_next_page_wrapper, 'a', {'href': "javascript:onChangePage('next');"})
+#        a.text = 'next'
     
     if CDATAWRAP :
         html = etree.tostring(prev_next_page_wrapper)
