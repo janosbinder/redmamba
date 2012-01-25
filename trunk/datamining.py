@@ -281,5 +281,5 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     return return_val
 
 html = get_html(1, 1);
-print etree.tostring(html, 'utf8', 'html')
-print etree.tostring(html, 'utf8', 'xml')
+print etree.tostring(html, encoding='utf8', method='html')
+print etree.tostring(html, encoding='utf8', method='xml')
