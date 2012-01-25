@@ -166,15 +166,15 @@ def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
         
 #        r_pmid = etree.SubElement(reflected, 'Article', {'pmid': PMID})
         
-        r_title = etree.SubElement(r_pmid, 'title')
-        r_title.text = UTF_Encode( doc_text[0] )
+#        r_title = etree.SubElement(r_pmid, 'title')
+#        r_title.text = UTF_Encode( doc_text[0] )
         
-        r_abstract_txt = etree.SubElement(r_pmid, 'abstract_txt')
+#        r_abstract_txt = etree.SubElement(r_pmid, 'abstract_txt')
         if len(doc_text) > 1 :
-            r_abstract_txt.text = doc_text[1] 
+            #r_abstract_txt.text = doc_text[1] 
             data['abstract'] = doc_text[1]
         else :
-            r_abstract_txt.text = ''
+            #r_abstract_txt.text = ''
             data['abstract'] = ''
         
         results[PMID] = data
