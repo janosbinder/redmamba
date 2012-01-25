@@ -263,7 +263,7 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     html = etree.tostring(articlehtml) 
 #    html = saxutils.unescape( etree.tostring(articlehtml) )
     html = html[html.find('<' + tagname + '>')+len(tagname)+2:html.find('</' + tagname+ '>')]
-    
+    print html
     return_val = {}
     
     if CDATAWRAP:
