@@ -280,4 +280,4 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
 
 html = get_html(1, 1);
 
-print html
+print etree.tostring(html)
