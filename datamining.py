@@ -22,7 +22,7 @@ def get_html(type, id) :
     
     pmidlist = '21779458 ,22002450'
     q = getArticles(pmidlist)
-    print list(q)
+    
     html = GetArticleAsHTML(q, False);
     # Get the matching documentids
     # call getArticles
