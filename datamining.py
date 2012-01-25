@@ -279,3 +279,5 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     return return_val
 
 html = get_html(1, 1);
+
+print html
