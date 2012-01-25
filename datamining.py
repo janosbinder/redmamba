@@ -181,7 +181,7 @@ def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
         data['journal'] = result['publication']
         data['authors'] = result['author'].split(',')
         data['year'] = result['year']
-        data['title'] = doc_text[0]
+        data['title'] = UTF_Encode(doc_text[0])
         
 #        r_pmid = etree.SubElement(reflected, 'Article', {'pmid': PMID})
         
