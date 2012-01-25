@@ -8,7 +8,7 @@ from time import gmtime, strftime, strptime
 from operator import itemgetter
 import math
 
-DB_CONN = [localhost,8081,andbok,OpenMed]
+DB_CONN = ['localhost',8081,'andbok','OpenMed']
 
 #TODO : FIXME: sdsdfds  
 
