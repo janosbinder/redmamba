@@ -57,6 +57,25 @@ def getArticles(pmidlist) :
 def UTF_Encode(uni) :
     #uni = uni.encode('iso-8859-1')
     return unicode(uni, 'utf-8')
+
+def CDATAWrap(value) :
+    return '{0}{1}{2}'.format("<![CDATA[", value, "]]>")
+
+def dateparser(value) :
+    if value.isdigit() :
+        return int(value)
+    else :
+        return 1
+
+def str_to_set(str) :
+    return Set(str_to_array(str))
+
+def str_to_array(str) :
+    arr = []
+    str = str.strip()
+    if len(str) > 0 :
+        arr = [int(x) for x in str.split(',')]
+    return arr
     
 
 def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
