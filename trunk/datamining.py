@@ -260,8 +260,7 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
         journal_sorting[PMID] = values['journal']
     
     
-    
-    print articlehtml
+    print etree.tostring(articlehtml)
     html = saxutils.unescape( etree.tostring(articlehtml) )
     print "\n\n\n\n\n"
     print articlehtml
