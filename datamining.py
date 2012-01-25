@@ -141,7 +141,7 @@ def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
         prev_next_page_wrapper.text = CDATAWrap( html )
     
     HTML = etree.SubElement(root, 'ReflectHTML')
-    HTML.text = reflected.findtext('HTML')
+#    HTML.text = reflected.findtext('HTML')
     
     #Debug
     #output = open('output.txt', 'w')
@@ -151,7 +151,7 @@ def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
     return root
 
 def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
-    reflected = etree.Element('Response')
+#    reflected = etree.Element('Response')
     results = {}
     
     PMID = None
@@ -165,7 +165,7 @@ def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
         data['year'] = result['year']
         data['title'] = doc_text[0]
         
-        r_pmid = etree.SubElement(reflected, 'Article', {'pmid': PMID})
+#        r_pmid = etree.SubElement(reflected, 'Article', {'pmid': PMID})
         
         r_title = etree.SubElement(r_pmid, 'title')
         r_title.text = UTF_Encode( doc_text[0] )
