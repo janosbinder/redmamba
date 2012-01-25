@@ -206,6 +206,11 @@ def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
 def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     articlehtml = etree.Element(tagname)
     
+    
+    print articles 
+    
+    print "\n\n\n\n"
+    
     date_sorting = {}
     journal_sorting = {}
     title_sorting = {}
