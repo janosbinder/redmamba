@@ -166,7 +166,7 @@ def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
     #output.write(etree.tostring(root))
     #output.close();
     
-    return root
+    return articlehtml
 
 def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
 #    reflected = etree.Element('Response')
@@ -275,8 +275,6 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     return_val['date_sorting'] = date_sorting
 
     return return_val
-
-
 
 html = get_html(1, 1);
 print etree.tostring(html)
