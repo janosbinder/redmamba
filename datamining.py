@@ -251,4 +251,4 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
 
     return return_val
 
-get_html(1, 1);
+get_html(self, 1, 1);
