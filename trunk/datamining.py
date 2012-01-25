@@ -18,7 +18,6 @@ def get_html(type, id) :
         : param id : id of protein
     """
     
-    getConnection()
     pmidlist = [22268896,22269215]
     q = getArticles(pmidlist)
     html = GetArticleAsHTML(q, False);
@@ -28,11 +27,16 @@ def get_html(type, id) :
     # return html fragment 
     print 'peace'
 
-
 def getConnection() :
     #conn_string = mamba.setup.config().globals['conn_string'].split(";")
     conn_string = DB_CONN
     return pg.connect(host = conn_string[0], port = int(conn_string[1]), user = conn_string[2], passwd = '', dbname = conn_string[3])
+
+def executeSQL(cmd) :
+    conn = getConnection()
+    q = conn.query(cmd)
+    conn.close()
+    return q
 
 def getArticles(pmidlist) :    
     """
@@ -251,5 +255,7 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     return_val['date_sorting'] = date_sorting
 
     return return_val
+
+
 
 get_html(1, 1);
