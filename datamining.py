@@ -2,38 +2,47 @@
 
 import pg
 import types
+import xml.sax.saxutils as saxutils
+import xml.etree.ElementTree as etree
+from time import gmtime, strftime, strptime
+from operator import itemgetter
+import math
 
 DB_CONN = 'localhost;8081;andbok;;OpenMed'
 
-# TODO : sfsdf
+#TODO : FIXME: sdsdfds  
 
 def get_html(self, type, id) :
     """
         : param type : type of ?
         : param id : id of protein
     """
-    print 'peace'
-
-def doSearch(id) :
-    """
-        Search document database for matching articles 
-    """
+    
+    getConnection()
+    pmidlist = [22268896,22269215]
+    q = getArticles(pmidlist)
+    html = GetArticleAsHTML(q, False);
+    # Get the matching documentids
     # call getArticles
     # call GetArticleAsHTML2
-    # return html fragment
+    # return html fragment 
+    print 'peace'
+
 
 def getConnection(self) :
     conn_string = mamba.setup.config().globals['conn_string'].split(";")
     return pg.connect(host = conn_string[0], port = int(conn_string[1]), user = conn_string[2], passwd = conn_string[3], dbname = conn_string[4])
 
-def getArticles(self, pmidlist) :
-    
+def getArticles(self, pmidlist) :    
     """
         get articles from database
         :param pmidlist : list of pmids to retrieve
-    """
+    """    
+        
     print 'pmidlist'
     print pmidlist
+    
+    
     cmd = 'SELECT * FROM documents WHERE PMID in ({0})'.format(pmidlist)
     q = executeSQL(cmd)
     return q.dictresult()
@@ -43,39 +52,27 @@ def UTF_Encode(self, uni) :
     return unicode(uni, 'utf-8')
     
 
-def GetArticleAsHTML(ranked_dictresult, reflect, CDATAWRAP) :
+def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
     
-    merged = list(ranked_dictresult)
-    for result in positives_dictresult :
-        merged.append(result)
-    print 'merged'
-    print merged
-    parsed_result = ParseDBResult(merged, reflect, CDATAWRAP)
     
-    reflected = parsed_result['reflected']
-    print (reflected)
+    parsed_result = ParseDBResult(ranked_dictresult, CDATAWRAP)
+    
     results = parsed_result['results']
+    print (results)
     
     articles = {}
-    positives = {}
     
     for article in ranked_dictresult :
         PMID = str(article['pmid'])
         articles[PMID] = results[PMID]
-    
-    for article in positives_dictresult :
-        PMID = str(article['pmid'])
-        positives[PMID] = results[PMID]
-    
+            
     root = etree.Element('Response')
     
-    if len(positives_dictresult) > 0 :
-        positiveshtml = etree.SubElement(root, 'PositivesHTML')
-        wrapped = HTMLWrapArticles(positives, "PositivesHTML", CDATAWRAP)
-        positiveshtml.text = wrapped['PositivesHTML']
     
     articlehtml = etree.SubElement(root, 'ArticleHTML')
+    
     wrapped = HTMLWrapArticles(articles, "ArticleHTML", CDATAWRAP)
+    
     articlehtml.text = wrapped['ArticleHTML']
     
     date_sorting = wrapped['date_sorting']
@@ -139,13 +136,14 @@ def GetArticleAsHTML(ranked_dictresult, reflect, CDATAWRAP) :
     HTML = etree.SubElement(root, 'ReflectHTML')
     HTML.text = reflected.findtext('HTML')
     
+    #Debug
     #output = open('output.txt', 'w')
     #output.write(etree.tostring(root))
     #output.close();
     
     return root
 
-def ParseDBResult( pygresql_dictresult, REFLECT, CDATAWRAP ) :
+def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
     reflected = etree.Element('Response')
     results = {}
     
@@ -175,27 +173,8 @@ def ParseDBResult( pygresql_dictresult, REFLECT, CDATAWRAP ) :
         
         results[PMID] = data
     
-    if REFLECT == True :
-        t_start = datetime.datetime.now()
-        reflected = Reflect(reflected, CDATAWRAP)
-        print ('reflected')
-        print (datetime.datetime.now()-t_start)
-        for article in reflected.findall('Article') :
-            PMID = article.get('pmid')
-            
-            title = etree.tostring(article.find('title'), 'UTF-8')
-            results[PMID]['title'] = title[title.find('<title>')+7:title.find('</title>')]
-            
-            abstract = article.find('abstract_txt')
-            
-            if abstract.text == None :
-                results[PMID]['abstract'] = ''
-            else :
-                abstract = etree.tostring(abstract, 'UTF-8')
-                results[PMID]['abstract'] = abstract[abstract.find('<abstract_txt>')+14:abstract.find('</abstract_txt>')]
     
     return_val = {}
-    return_val['reflected'] = reflected
     return_val['results'] = results
     return return_val
 
@@ -271,16 +250,3 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     return_val['date_sorting'] = date_sorting
 
     return return_val
-
-
-def Reflect(doc, CDATAWRAP):
-    doc = etree.tostring(doc)
-    tagdoc = mamba.setup.config().tagger.GetHTML(doc, None, [-1, -11, 9606])
-    reflect_response = etree.fromstring(tagdoc[:tagdoc.find('</Response>')+11]);
-    HTML = etree.SubElement(reflect_response, 'HTML')
-    if CDATAWRAP: 
-        HTML.text = CDATAWrap(tagdoc[tagdoc.find('</Response>')+11:tagdoc.find('</body>')])
-    else :
-        HTML.text = tagdoc[tagdoc.find('</Response>')+11:tagdoc.find('</body>')]
-    
-    return reflect_response
