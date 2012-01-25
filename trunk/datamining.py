@@ -27,7 +27,7 @@ def get_html(type, id) :
     # call getArticles
     # call GetArticleAsHTML2
     # return html fragment 
-    print 'peace'
+    return html
 
 def getConnection() :
     #conn_string = mamba.setup.config().globals['conn_string'].split(";")
@@ -260,4 +260,5 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
 
 
 
-get_html(1, 1);
+html = get_html(1, 1);
+print html
