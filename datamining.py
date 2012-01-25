@@ -12,7 +12,7 @@ DB_CONN = 'localhost;8081;andbok;;OpenMed'
 
 #TODO : FIXME: sdsdfds  
 
-def get_html(self, type, id) :
+def get_html(type, id) :
     """
         : param type : type of ?
         : param id : id of protein
@@ -29,11 +29,11 @@ def get_html(self, type, id) :
     print 'peace'
 
 
-def getConnection(self) :
+def getConnection() :
     conn_string = mamba.setup.config().globals['conn_string'].split(";")
     return pg.connect(host = conn_string[0], port = int(conn_string[1]), user = conn_string[2], passwd = conn_string[3], dbname = conn_string[4])
 
-def getArticles(self, pmidlist) :    
+def getArticles(pmidlist) :    
     """
         get articles from database
         :param pmidlist : list of pmids to retrieve
@@ -47,7 +47,7 @@ def getArticles(self, pmidlist) :
     q = executeSQL(cmd)
     return q.dictresult()
     
-def UTF_Encode(self, uni) :
+def UTF_Encode(uni) :
     #uni = uni.encode('iso-8859-1')
     return unicode(uni, 'utf-8')
     
