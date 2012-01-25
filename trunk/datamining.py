@@ -268,11 +268,10 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     
     return_val = {}
     
-    return_val[tagname] = CDATAWrap( html )
-#    if CDATAWRAP:
-#        return_val[tagname] = CDATAWrap( html )
-#    else :
-#        return_val[tagname] = html
+    if CDATAWRAP:
+        return_val[tagname] = CDATAWrap( html )
+    else :
+        return_val[tagname] = html
     
     return_val['ranked_sorting'] = ranked_sorting
     return_val['title_sorting'] = title_sorting
@@ -282,4 +281,5 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     return return_val
 
 html = get_html(1, 1);
-print etree.tostring(html)
+print etree.tostring(html, 'utf8', 'html')
+print etree.tostring(html, 'utf8', 'xml')
