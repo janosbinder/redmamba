@@ -250,3 +250,5 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     return_val['date_sorting'] = date_sorting
 
     return return_val
+
+get_html(1, 1);
