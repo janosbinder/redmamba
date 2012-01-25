@@ -20,7 +20,7 @@ def get_html(type, id) :
         : param id : id of protein
     """
     
-    pmidlist = '22268896,22269215'
+    pmidlist = '21779458 ,22002450'
     q = getArticles(pmidlist)
     print list(q)
     html = GetArticleAsHTML(q, False);
