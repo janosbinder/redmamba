@@ -32,7 +32,7 @@ def get_html(type, id) :
 def getConnection() :
     #conn_string = mamba.setup.config().globals['conn_string'].split(";")
     conn_string = DB_CONN
-    return pg.connect(host = conn_string[0], port = int(conn_string[1]), user = conn_string[2], passwd = '', dbname = conn_string[4])
+    return pg.connect(host = conn_string[0], port = int(conn_string[1]), user = conn_string[2], passwd = '', dbname = conn_string[3])
 
 def getArticles(pmidlist) :    
     """
