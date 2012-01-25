@@ -83,7 +83,7 @@ def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
     parsed_result = ParseDBResult(ranked_dictresult, CDATAWRAP)
     
     results = parsed_result['results']
-    print (results)
+    
     
     articles = {}
     
@@ -206,10 +206,6 @@ def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
 def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     articlehtml = etree.Element(tagname)    
     
-    print articles 
-    
-    print "\n\n\n\n"
-    
     date_sorting = {}
     journal_sorting = {}
     title_sorting = {}
@@ -263,7 +259,12 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
         date_sorting[PMID] = pubdate
         journal_sorting[PMID] = values['journal']
     
+    
+    
+    print articlehtml
     html = saxutils.unescape( etree.tostring(articlehtml) )
+    print "\n\n\n\n\n"
+    print articlehtml
     html = html[html.find('<' + tagname + '>')+len(tagname)+2:html.find('</' + tagname+ '>')]
     
     return_val = {}
@@ -281,4 +282,3 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     return return_val
 
 html = get_html(1, 1);
-print etree.tostring(html, 'utf8')
