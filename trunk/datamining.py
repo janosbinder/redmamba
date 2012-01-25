@@ -22,6 +22,7 @@ def get_html(type, id) :
     
     pmidlist = '22268896,22269215'
     q = getArticles(pmidlist)
+    print list(q)
     html = GetArticleAsHTML(q, False);
     # Get the matching documentids
     # call getArticles
@@ -49,7 +50,6 @@ def getArticles(pmidlist) :
     print 'pmidlist'
     print pmidlist
     
-    
     cmd = 'SELECT * FROM documents WHERE PMID in ({0})'.format(pmidlist)
     q = executeSQL(cmd)
     return q.dictresult()
@@ -60,7 +60,6 @@ def UTF_Encode(uni) :
     
 
 def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
-    
     
     parsed_result = ParseDBResult(ranked_dictresult, CDATAWRAP)
     
