@@ -23,7 +23,7 @@ def get_html(type, id) :
     pmidlist = '21779458 ,22002450'
     q = getArticles(pmidlist)
     
-    html = GetArticleAsHTML(q, False);
+    html = GetArticleAsHTML(q, True);
     # Get the matching documentids
     # call getArticles
     # call GetArticleAsHTML2
@@ -204,8 +204,7 @@ def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
     return return_val
 
 def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
-    articlehtml = etree.Element(tagname)
-    
+    articlehtml = etree.Element(tagname)    
     
     print articles 
     
