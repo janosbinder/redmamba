@@ -96,7 +96,8 @@ def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
     
     articlehtml = etree.SubElement(root, 'ArticleHTML')
     
-    wrapped = HTMLWrapArticles(articles, "ArticleHTML", CDATAWRAP)
+#    wrapped = HTMLWrapArticles(articles, "ArticleHTML", CDATAWRAP)
+    return HTMLWrapArticles(articles, "ArticleHTML", CDATAWRAP)
     
     articlehtml.text = wrapped['ArticleHTML']
     
@@ -276,7 +277,8 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
     return_val['journal_sorting'] = journal_sorting
     return_val['date_sorting'] = date_sorting
 
-    return return_val
+#    return return_val
+    return html 
 
 html = get_html(1, 1);
 
