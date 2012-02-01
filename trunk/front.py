@@ -7,6 +7,9 @@ class HtmlNode:
 	
 	def __init__(self):
 		self.nodes = []
+		
+	def add(self, node):
+		self.nodes.append(node)
 	
 	def begin_html(self):
 		return ""
@@ -30,7 +33,7 @@ class HtmlText(HtmlNode):
 		self.text = text
 	
 	def begin_html(self):
-		return text
+		return self.text
 
 
 class HtmlPar(HtmlText):
@@ -79,11 +82,11 @@ class HtmlPage(HtmlNode):
 	def __init__(self):
 		HtmlNode.__init__(self)
 		self.head = HtmlHead()
-		self.head.css.append("redmamba/css/default.css")
-		self.head.scripts.append("redmamba/scripts/default.js")
+		self.head.css.append("css/default.css")
+		#self.head.scripts.append("scripts/default.js")
 		self.body = HtmlBody()
-		self.nodes.append(self.head)
-		self.nodes.append(self.body)
+		self.add(self.head)
+		self.add(self.body)
 		
 	def begin_html(self):
 		html = []
@@ -98,10 +101,10 @@ class HtmlPage(HtmlNode):
 class HtmlDemoPage(HtmlPage):
 	
 	def __init__(self):
-		HtmlPage.__init__(self)		
-		self.body.nodes.append(HtmlPar("<H1>This is the header.</H1>"))
-		self.body.nodes.append(HtmlPar("This is the body."))
-		self.body.nodes.append(HtmlPar("<H1>This is the footer.</H1>"))
+		HtmlPage.__init__(self)
+		self.body.add(HtmlPar("<H1>This is the header.</H1>"))
+		self.body.add(HtmlPar("This is the body."))
+		self.body.add(HtmlPar("<H1>This is the footer.</H1>"))
 		
 
 class MyPage(mamba.task.Request):
@@ -111,7 +114,7 @@ class MyPage(mamba.task.Request):
 		type = rest["type"]
 		id = rest["identifier"]
 		
-		page = HtmlDemoPage(type, id)
+		page = HtmlDemoPage()
 		
 		reply = mamba.http.HTMLResponse(self, page.get_html())
 		reply.send()

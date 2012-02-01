@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 
-import pg
+try:
+	import pg
+except ImportError:
+	try:
+		import psycopg2
+	except ImportError:
+		pass
+	
 import types
 import xml.sax.saxutils as saxutils
 import xml.etree.ElementTree as etree
