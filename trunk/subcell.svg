@@ -1,0 +1,98 @@
+<?xml version="1.0" standalone="yes"?>
+
+<svg version="1.1" viewBox="0.0 0.0 1024.0 768.0" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" clip-path="url(#p.0)" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g title="ex" fill="#ffffff">
+    <rect x="0" y="0" width="970" height="770"/>
+</g>
+<text title="ex-text" x="230" y="78" fill="black">[11] Extracellular
+</text>
+<g title="pm" fill="#cccccc">
+    <rect x="160" y="105" rx="50" ry="50" width="650" height="560"
+    stroke="black" stroke-width="1" />
+</g>
+<text title="pm-text" x="574" y="97" fill="black">[8] Plasma membrane
+</text>
+<g title="cy" fill="#ffffff">
+    <rect x="170" y="115" rx="40" ry="40" width="630" height="540"
+    stroke="black" stroke-width="1" />
+</g>
+<text title="cytosol-text" x="613" y="250" fill="black">[2] Cytosol
+</text>
+<g title="cs" fill="#cccccc">
+    <path title="cs-part1" d="M271.93445 479.4388L271.93445 479.4388C272.75967 478.49207 272.59967 477.13358 271.57703 476.4045L228.59535 445.7614C228.10428 445.4113 227.47588 445.25613 226.84842 445.33005C226.22096 445.40396 225.64581 445.7009 225.24953 446.15552L225.24953 446.15552L225.24953 446.15552C224.4243 447.10226 224.58434 448.46075 225.60695 449.18982L268.58862 479.83292C269.61127 480.56198 271.10922 480.38553 271.93445 479.4388Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+    <path title="cs-part2" d="M319.74887 468.62122L319.74887 468.62122C320.5741 467.67447 320.41406 466.31598 319.39145 465.5869L276.40976 434.9438C275.91867 434.5937 275.29028 434.43854 274.6628 434.51245C274.03537 434.58633 273.4602 434.88327 273.06393 435.33792L273.06393 435.33792L273.06393 435.33792C272.2387 436.28464 272.39874 437.64316 273.42136 438.37222L316.40305 469.01532C317.42566 469.7444 318.92365 469.56793 319.74887 468.62122Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+    <path title="cs-part3" d="M272.5113 519.3407L272.5113 519.3407C271.96115 519.3407 271.51514 518.8947 271.51514 518.34454L271.51514 401.34323C271.51514 401.07904 271.6201 400.82565 271.80692 400.63885C271.99374 400.45203 272.2471 400.34708 272.5113 400.34708L276.4958 400.34708C277.04596 400.34708 277.49194 400.7931 277.49194 401.34323L277.49194 518.34454L277.49194 518.34454C277.49194 518.8947 277.04596 519.3407 276.4958 519.3407Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+</g>
+<text title="cs-text" x="208" y="394" fill="black">[3] Cytoskeleton
+</text>
+<g title="pe" fill="#cccccc">
+<path title="perioxisome" d="M344.0 212.0L344.0 212.0C344.0 200.9543 352.9543 192.0 364.0 192.0L364.0 192.0C369.30432 192.0 374.39142 194.10713 378.14215 197.85786C381.89285 201.6086 384.0 206.69566 384.0 212.0L384.0 212.0C384.0 223.0457 375.0457 232.0 364.0 232.0L364.0 232.0C352.9543 232.0 344.0 223.0457 344.0 212.0Z" fill-rule="nonzero"  stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+</path>
+</g>
+<text title="peroxisome-text" x="303" y="185" fill="black">[4] Peroxisome
+</text>
+<g title="ly" fill="#cccccc">
+    <path title="lysosome" d="M232.0 304.0L232.0 304.0C232.0 286.32687 246.32689 272.0 264.0 272.0L264.0 272.0C272.48694 272.0 280.62625 275.37143 286.6274 281.3726C292.62857 287.37375 296.0 295.51306 296.0 304.0L296.0 304.0C296.0 321.67313 281.67313 336.0 264.0 336.0L264.0 336.0C246.32689 336.0 232.0 321.67313 232.0 304.0Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+</g>
+<text title="lysosome-text" x="205" y="260" fill="black">[5] Lysosome
+</text>
+<g title="er" fill="#cccccc">
+<path title="er-part1" d="M488.0 508.0L488.0 508.0C488.0 466.02637 538.1441 432.0 600.0 432.0L600.0 432.0C661.8559 432.0 712.0 466.02637 712.0 508.0L712.0 508.0C712.0 549.97363 661.8559 584.0 600.0 584.0L600.0 584.0C538.1441 584.0 488.0 549.97363 488.0 508.0Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+</path>
+<path title="er-part2" d="M504.0 524.0L504.0 524.0C504.0 482.02637 546.98065 448.0 600.0 448.0L600.0 448.0C653.01935 448.0 696.0 482.02637 696.0 524.0L696.0 524.0C696.0 565.97363 653.01935 600.0 600.0 600.0L600.0 600.0C546.98065 600.0 504.0 565.97363 504.0 524.0Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+</path>
+<path title="er-part3" d="M512.0 540.0L512.0 540.0C512.0 498.02637 551.3989 464.0 600.0 464.0L600.0 464.0C648.6011 464.0 688.0 498.02637 688.0 540.0L688.0 540.0C688.0 581.97363 648.6011 616.0 600.0 616.0L600.0 616.0C551.3989 616.0 512.0 581.97363 512.0 540.0Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+</path>
+</g>
+<text title="er-text" x="399" y="431" fill="black">[6] Endoplasmic
+<tspan x="419" y="451">Reticulum
+</tspan>
+</text>
+<g title="go" fill="#cccccc">
+    <path title="golgi-part1" d="M660.2258 402.47296L660.2258 402.47296C659.5528 408.1126 642.1631 410.67374 621.38477 408.1934L621.38477 408.1934C600.60645 405.71304 584.30786 399.1305 584.98083 393.49084L584.98083 393.49084C585.6539 387.8512 603.0436 385.29007 623.8219 387.77042L623.8219 387.77042C644.6003 390.25076 660.89886 396.8333 660.2258 402.47296Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+    <path title="golgi-part2" d="M665.7665 416.94662L665.7665 416.94662C665.09344 422.58627 644.49866 424.7648 619.76666 421.8125L619.76666 421.8125C595.03467 418.8602 575.531 411.89505 576.20404 406.2554L576.20404 406.2554C576.877 400.61575 597.47186 398.43726 622.20386 401.38956L622.20386 401.38956C646.93585 404.34186 666.4395 411.307 665.7665 416.94662Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+    <path title="golgi-part3" d="M671.3071 431.42032L671.3071 431.42032C670.6341 437.05997 646.8288 438.85526 618.13654 435.4302L618.13654 435.4302C589.4442 432.00516 566.7301 424.65677 567.40314 419.01712L567.40314 419.01712C568.0761 413.37747 591.8814 411.5822 620.5737 415.00726L620.5737 415.00726C649.266 418.4323 671.9801 425.78067 671.3071 431.42032Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+    <path title="golgi-part4" d="M681.9906 445.7885L681.9906 445.7885C681.3176 451.42816 652.0394 452.57013 616.596 448.3392L616.596 448.3392C581.1526 444.10825 552.96564 436.10657 553.6386 430.46692L553.6386 430.46692C554.31165 424.82727 583.5898 423.68527 619.0332 427.91623L619.0332 427.91623C654.4766 432.1472 682.66364 440.14886 681.9906 445.7885Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+</g>
+<text title="golgi-text" x="714" y="415" fill="black">[7] Golgi
+<tspan x="734" y="435">appartus
+</tspan>
+</text>
+<g title="en" fill="#cccccc">
+    <path title="endosome" d="M240.0 188.0L240.0 188.0C240.0 176.9543 248.9543 168.0 260.0 168.0L260.0 168.0C265.30432 168.0 270.39142 170.10713 274.14215 173.85786C277.89285 177.6086 280.0 182.69566 280.0 188.0L280.0 188.0C280.0 199.0457 271.0457 208.0 260.0 208.0L260.0 208.0C248.9543 208.0 240.0 199.0457 240.0 188.0Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+    <path title="en-part1" d="M318.7684 104.41053L318.7684 104.41053C322.07053 114.31689 318.5883 125.22151 310.15594 131.38065C301.72357 137.53978 290.27643 137.53978 281.84406 131.38065C273.4117 125.22151 269.92947 114.31689 273.2316 104.41053Z" fill-rule="nonzero" fill="#ffffff" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+    <path title="en-part2" d="M280.0 96.0L312.0 96.0L312.0 112.0L280.0 112.0Z" fill-rule="nonzero" fill="#ffffff" stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+</g>
+<text title="endosome-text" x="203" y="160" fill="black">[9] Endosome
+</text>
+<g title="nu" fill="#cccccc">
+    <path title="nucleus" d="M520.0 560.0L520.0 560.0C520.0 515.8172 555.8172 480.0 600.0 480.0L600.0 480.0C621.21735 480.0 641.5656 488.42856 656.56854 503.43146C671.5715 518.4344 680.0 538.78265 680.0 560.0L680.0 560.0C680.0 604.1828 644.1828 640.0 600.0 640.0L600.0 640.0C555.8172 640.0 520.0 604.1828 520.0 560.0Z" fill-rule="nonzero"  stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+</g>
+<text title="nu-text" x="555" y="570" fill="black">[1] Nucleus
+</text>
+<g title="va" fill="#cccccc">
+    <path title="vacoule" d="M432.0 244.0L432.0 244.0C432.0 232.9543 440.9543 224.0 452.0 224.0L452.0 224.0C457.30432 224.0 462.39142 226.10713 466.14215 229.85786C469.89285 233.6086 472.0 238.69566 472.0 244.0L472.0 244.0C472.0 255.0457 463.0457 264.0 452.0 264.0L452.0 264.0C440.9543 264.0 432.0 255.0457 432.0 244.0Z" fill-rule="nonzero"  stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+</g>
+<text title="vacoule-text" x="412" y="216" fill="black">[10] Vacuole
+</text>
+<g title="mi" fill="#cccccc">
+    <path title="mitochondrion" d="M224.0 576.0002L224.0 576.0002C224.0 571.5818 227.58179 568.0 232.00015 568.0L399.99985 568.0C402.1216 568.0 404.1565 568.8429 405.65683 570.3432C407.15714 571.8435 408.0 573.87836 408.0 576.0002L408.0 607.9998C408.0 612.4182 404.4182 616.0 399.99985 616.0L232.00015 616.0L232.00015 616.0C227.58179 616.0 224.0 612.4182 224.0 607.9998Z" fill-rule="nonzero" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt">
+    </path>
+</g>
+<text title="mitochondrion-text" x="246" y="602" fill="black">[12] Mitochondrion
+</text>
+</svg>
+
