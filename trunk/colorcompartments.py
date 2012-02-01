@@ -1,38 +1,24 @@
-#!/usr/bin/env python
-# file: colorcompartments.py
-
 import sys
 import re
 import string
 import random
 
+import mamba.setup
 
-header = '<html><body><h1>This is some cell SVG</h1>'
-footer = '</body></html>'
-
-#compartment = sys.argv[2]
-#weight = float(sys.argv[3])
-#input = sys.argv[2]
-#filename = sys.argv[1]
-
-def show_subcell_loc(type,id):
-	#some database lookup stuff
-	filename = 'subcell.svg'
-	print header
-	#print create_colored_html(filename,create_compartment_score(input))
-	print create_colored_html(filename,get_mock_subcell_loc(0,0))
-	print footer
-	return
-
-def show_different_methods(type,id):
+def show_subcell_loc(type, id):
+	filename = mamba.setup.config().globals["cell_svg"]
+	names   = ["Cellular localiztion"]
+	outputs = [create_colored_html(filename, get_mock_subcell_loc(type, id))]
+	tool    = "Cell"
+	format  = "html"
+	return names, outputs, tool, format
+	
+def show_different_methods(type, id):
 	#some database lookup stuff
 	filename = 'figure.svg'
-	print header
 	#print create_colored_html(filename,create_compartment_score(input))
-	print create_colored_html(filename,get_mock_different_methods(0,0))
-	print footer
-	return
-
+	print create_colored_html(filename, get_mock_different_methods(type, id))
+	
 def get_mock_subcell_loc(type,id):
 	compartments = ['nu','cy','cs','pe','ly','er','go','pm','en','va','ex','mi']
 	compartment_score_map = {}
@@ -41,7 +27,7 @@ def get_mock_subcell_loc(type,id):
 		compartment_score_map[compartment] = random.random()
 	return compartment_score_map
 
-def get_mock_different_methods(type,id):
+def get_mock_different_methods(type, id):
 	compartments = ['nu','cy','cs','pe','ly','er','go','pm','en','va','ex','mi']
 	methods = ['YLocH','YLocL','TargetP','PSORT','LocTree','KnowPred','BaCellLo']
 	compartment_score_map = {}
@@ -52,14 +38,6 @@ def get_mock_different_methods(type,id):
 			compartment_score_map[entry] = random.random()
 	return compartment_score_map
 
-def create_compartment_score(input):
-	compartment_score_pairs = input.split(';')
-	compartment_score = {}
-	for pair in compartment_score_pairs:
-		[compartment, weight] = pair.split(',',2)
-		compartment_score[compartment] = weight
-	return compartment_score;
-
 def define_color(weight):
 	r=0
 	dr=0
@@ -69,8 +47,6 @@ def define_color(weight):
 	db=0
 	color = "#%2.2x%2.2x%2.2x" % (r+dr*float(weight), g+dg*float(weight), b+db*float(weight))
 	return color
-
-#print color
 
 def concatenate_list(mylist, prefix, suffix, separator):
 	str_list = [];
@@ -104,4 +80,3 @@ def create_colored_html(filename, compartment_color_map):
 	f.close()
 	return string.join(buffer,"\n")
 
-show_subcell_loc(0,0)
