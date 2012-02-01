@@ -10,7 +10,7 @@ from time import gmtime, strftime, strptime
 from operator import itemgetter
 import math
 
-DB_CONN = ['localhost',8081,'andbok','OpenMed']
+DB_CONN = ['purple',5432,'ljj','']
 
 #TODO : FIXME: sdsdfds  
 
@@ -280,5 +280,5 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
 #    return return_val
     return html 
 
-html = get_html(1, 1);
-print html
+#html = get_html(1, 1);
+#print html
