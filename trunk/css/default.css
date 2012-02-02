@@ -1,2 +1,18 @@
-p  { font-family: Arial, Helvetica, sans-serif; }
-h1 { font-family: Arial, Helvetica, sans-serif; }
+#wrapper {
+	width: 960px;
+}
+
+#sidebar {
+	200px;
+	display: inline-block;
+}
+
+#content {
+	width: 740px;
+	display: inline-block; 
+}
+
+.section {
+	padding: 10px 10px 10px 10px;
+	border: 1px solid black;
+}
