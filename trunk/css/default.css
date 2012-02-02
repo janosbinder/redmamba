@@ -1,18 +1,44 @@
 #wrapper {
 	width: 960px;
+	vertical-align: top;
+	height: 100%;
+}
+
+table {
+	height: 100%;
+	vertical-align: top;
+}
+
+table tr td {
+	vertical-align: top;
+}
+
+.left-cell {
+	height: 100%;
+	background-color: rgb(205, 218, 246);
 }
 
 #sidebar {
-	200px;
+	width: 200px;
 	display: inline-block;
+	float: left;
+	width: 200px;
+	/*border: 1px solid black;
+	background-color: rgb(205, 218, 246);*/
 }
 
 #content {
 	width: 740px;
-	display: inline-block; 
+	display: inline-block;
+	width: 740px;
+	/*border: 1px solid black;*/
 }
 
 .section {
 	padding: 10px 10px 10px 10px;
-	border: 1px solid black;
+	/*border: 1px solid black;*/
+}
+
+h1, h2, h3 {
+	font-family: sans-serif
 }
