@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<link type="text/css" href="css/default.css">
+		<title>Table layout</title>
+	</head>
+	
+	<body>
+		<div id="title">Page title</div>
+		<table border="1" cellspacing="5" cellpadding="5" width="960px">
+			<tr>
+				<td rowspan="3" width="200px" valign="top">Side bar</td><td> Using object tag
+				<object id="E" type="image/svg+xml"
+				data="http://srufaculty.sru.edu/david.dailey/svg/ovals.svg"
+				width="320" height="240" style="display: block">
+					alt : Your browser has no SVG support. Please install <a
+					href="http://www.adobe.com/svg/viewer/install/">Adobe SVG
+					Viewer</a> plugin (for Internet Explorer) or use <a
+					href="http://www.getfirefox.com/">Firefox</a>, <a
+					href="http://www.opera.com/">Opera</a> or <a
+					href="http://www.apple.com/safari/download/">Safari</a> instead.
+				</object></td>
+			</tr>
+			<tr>
+				<td> Using embed tag
+				<embed type="image/svg+xml" width="320" height="240" style="display: block"
+				src="http://srufaculty.sru.edu/david.dailey/svg/ovals.svg"
+				/>
+				Text after svg file
+				</td>
+			</tr>
+			<tr>
+				<td>Some other section</td>
+			</tr>
+		</table>
+	</body>
+</html>
