@@ -1,5 +1,7 @@
 import os
 import sys
+import datetime
+import datamining
 import mamba.task
 import mamba.http
 
@@ -9,13 +11,11 @@ class xnode:
 	def __init__(self, attr={}):
 		self.attr  = attr
 		self.nodes = []
-		#self.parent = None
 		
 	def add(self, node):
 		if node == self:
 			raise Exception, "HTML node %s is a child of itself" % str(node)
 		self.nodes.append(node)
-		#node.parent = self
 		
 	def get_attributes(self):
 		attr = []
@@ -33,14 +33,24 @@ class xnode:
 	def end_html(self):
 		return ""
 	
-	def get_html(self):
+	def __setitem__(self, attribute, value):
+		self.attr[attribute] = value
+		
+	def __getitem__(self, attribute):
+		return self.attr[attribute]
+		
+	def __str__(self):
 		html = []
 		html.append(self.begin_html())
 		for node in self.nodes:
-			#print " ", self, node
-			html.append(node.get_html())
+			try:
+				s = str(node)
+				s = "\r\n".join(map(lambda a: "  " + a, s.split("\r\n")))
+				html.append(s)
+			except Exception, e:
+				html.append('<span style="color: red">%s</span>' % str(e))
 		html.append(self.end_html())
-		return "\r\n".join(html)		
+		return "\r\n".join(html).rstrip()
 		
 class xtag(xnode):
 	
@@ -72,7 +82,10 @@ class xpar(xtag):
 	def __init__(self, text=None, attr={}):
 		xtag.__init__(self, "p", attr)
 		if text != None:
-			self.add(xfree(text))
+			if type(text) is str:
+				self.add(xfree(text))
+			else:
+				self.add(text)
 	
 class xdiv(xtag):
 	
@@ -98,7 +111,7 @@ class xh2(xtag):
 		self.add(xfree(heading))
 
 
-class xh2(xtag):
+class xh3(xtag):
 	
 	def __init__(self, heading):
 		xtag.__init__(self, "h3")
@@ -111,13 +124,6 @@ class xcell(xtag):
 	def __init__(self, child, attr={}):
 		xtag.__init__(self, "td", attr)
 		self.add(child)
-
-class xleftcell(xcell):
-	
-	def __init__(self, child):
-		attr = {"class" : "left-cell"}
-		xcell.__init__(self, child, attr)
-	
 	
 class xrow(xtag):
 	
@@ -125,16 +131,27 @@ class xrow(xtag):
 		xtag.__init__(self, "tr", attr)
 	
 	def add(self, node):
-		if len(self.nodes) == 0:
-			self.nodes.append(xleftcell(node))
-		else:
+		if type(node) is str:
 			self.nodes.append(xcell(node))
+		else:
+			self.nodes.append(node)
 	
 		
 class xtable(xtag):
 	
 	def __init__(self, attr={}):
 		xtag.__init__(self, "table", attr)
+		self.tbody = xtag("tbody")
+		self.add(self.tbody)
+		
+	def addrow(self, *arg):
+		row = xrow()
+		for item in arg:
+			if type(item) is str:
+				row.add(xcell(item))
+			else:
+				row.add(item)
+		self.tbody.add(row)
 		
 
 class xhead(xtag):
@@ -164,19 +181,18 @@ class xbody(xtag):
 		xtag.__init__(self, "body")
 
 
-class xsesction(xdiv):
+class xsection(xdiv):
 	
 	def __init__(self, title, text):
 		xdiv.__init__(self, "section")
 		par = xpar()
-		par.add(xh1(title))
+		par.add(xh2(title))
 		par.add(xhr())
-		par.add(xfree(text))
+		if type(text) is str:
+			par.add(xfree(text))
+		else:
+			par.add(text)
 		self.add(par)
-		#self.add(xh1(title))
-		#self.add(xtag("hr"))
-		#self.add(xpar(text))
-
 		
 class xpage(xtag):
 	
@@ -194,40 +210,75 @@ class xpage(xtag):
 		return "\r\n".join(html)
 	
 
+
 class xdemopage(xpage):
 	
-	def __init__(self):
-		xpage.__init__(self)
+	class xpagetable(xtable):
+		
+		def __init__(self, title):
+			xtable.__init__(self, {"class":"page-outer-table"})
 
-		self.head.title = "Demo page"
+			row = xrow()
+			row.add(xcell("&nbsp", {"class":"page-header-left"}))
+			row.add(xcell(xh1(title), {"class":"page-header-right"}))
+			self.tbody.add(row)
+			
+			row = xrow()
+			row.add(xcell("&nbsp", {"class" : "top-separator"}))
+			row.add(xcell("&nbsp", {"class" : "top-separator"}))
+			self.tbody.add(row)
+			
+			self.sidebar = xdiv("sidebar")
+			self.content = xdiv("content")
+			
+			row = xrow()
+			row.add(xcell(self.sidebar, {"class" : "sidebar-cell"}))
+			row.add(xcell(self.content))
+			self.tbody.add(row)
+			
+			
+	
+	def __init__(self, type, id):
+		xpage.__init__(self)
+		self.head.title = "Demo page"		
+		self.page = xdemopage.xpagetable("Compendium of Disease Genes")
 		
 		wrapper = xdiv("wrapper")
-		title = xdiv(None, "title")
-		title.add(xfree("<h1>Compendium of Disease Genes</h1>"))
-		wrapper.add(title)
-		
-		sidebar = xdiv("sidebar")
-		sidebar.add(xfree("<p>Genes: 2,714<br>Disease: 8,559</p>&nbsp;"))
-		content = xdiv("content")
-		
-		table = xtable()
-
-		row = xrow()
-		row.add(sidebar)
-		row.add(content)
-
-		table.add(row)
-		
-		wrapper.add(table)
-		
-		content.add(xsesction("Alzheimer's disease", "A dementia that results in progressive memory loss, impaired thinking, disorientation, and changes in personality and mood starting in late middle age and leads in advanced cases to a profound decline in cognitive and physical functioning and is marked histologically by the degeneration of brain neurons especially in the cerebral cortex and by the presence of neurofibrillary tangles and plaques containing beta-amyloid."))
-		content.add(xsesction("Diabetes mellitus", "Diabetes mellitus, often simply referred to as diabetes, is a group of metabolic diseases in which a person has high blood sugar, either because the body does not produce enough insulin, or because cells do not respond to the insulin that is produced."))
-		content.add(xsesction("Shigellosis", "A primary bacterial infectious disease that results in infection located in epithelium of colon, has material basis in Shigella boydii, has material basis in Shigella dysenteriae, has material basis in Shigella flexneri, or has material basis in Shigella sonnei, which produce toxins that can attack the lining of the large intestine, causing swelling, ulcers on the intestinal wall, and bloody diarrhea."))
-		
-		import datamining
-		content.add(xfree(datamining.get_html(9606, "ENSP00000335657")))
-		
+		wrapper.add(self.page)
 		self.body.add(wrapper)
+		
+		tbl = xtable({"width":"100%"})
+		tbl.addrow("&nbsp", "&nbsp")
+		tbl.addrow("Last updated:", datetime.datetime.now().strftime('%a-%d-%b-%Y %H:%M:%S %Z'))
+		tbl.addrow("Disease", "8,553")
+		tbl.addrow("Genes and proteins", "2,714")
+		self.page.sidebar.add(tbl)
+		
+		
+		sec0 = xsection("Disease gene association", '<img src="figure2.png" width="60%"></img>Using an andvanced textmining pipeline against the full body of indexed medical literatur and a ontology-derived, ontology-self-curated dictionary consisting of proteins, disease, chemicals etc. we have created the worlds first resource linking genes to diseases on a scale never seen before.')
+		sec1 = xsection("Alzheimer's disease", "A dementia that results in progressive memory loss, impaired thinking, disorientation, and changes in personality and mood starting in late middle age and leads in advanced cases to a profound decline in cognitive and physical functioning and is marked histologically by the degeneration of brain neurons especially in the cerebral cortex and by the presence of neurofibrillary tangles and plaques containing beta-amyloid.")
+		sec2 = xsection("Diabetes mellitus", "Diabetes mellitus, often simply referred to as diabetes, is a group of metabolic diseases in which a person has high blood sugar, either because the body does not produce enough insulin, or because cells do not respond to the insulin that is produced.")
+		sec3 = xsection("Shigellosis", "A primary bacterial infectious disease that results in infection located in epithelium of colon, has material basis in Shigella boydii, has material basis in Shigella dysenteriae, has material basis in Shigella flexneri, or has material basis in Shigella sonnei, which produce toxins that can attack the lining of the large intestine, causing swelling, ulcers on the intestinal wall, and bloody diarrhea.")
+		self.page.content.add(sec0)
+		self.page.content.add(sec1)
+		self.page.content.add(sec2)
+		self.page.content.add(sec3)
+		
+		
+		par = xpar()
+		par.add(xfree("This is just a test of a customized section we might have. Here is an ugly table:"))
+		tbl = xtable({"frame":"hsides", "width":"100%", "style":"background: #F7FCE4"})
+		tbl.add(xfree("<caption><em>Table 1:</em> Monthly savings.</caption>"))
+		tbl.addrow("Happy", "Go", "Lucky")
+		tbl.addrow("What can I", "come up with")
+		tbl.addrow("for this row?")
+		par.add(tbl)
+		
+		self.page.content.add(xsection("Test", par))
+		
+		self.page.content.add(datamining.xtextmining(9606, "ENSP00000335657"))
+		
+		
 		
 
 class MyPage(mamba.task.Request):
@@ -237,7 +288,7 @@ class MyPage(mamba.task.Request):
 		type = rest["type"]
 		id   = rest["identifier"]
 		
-		page = xdemopage()
-		reply = mamba.http.HTMLResponse(self, page.get_html())
+		page = xdemopage(type, id)
+		reply = mamba.http.HTMLResponse(self, str(page))
 		reply.send()
 		

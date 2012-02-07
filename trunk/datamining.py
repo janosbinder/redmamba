@@ -4,7 +4,8 @@ try:
 	import pg
 except ImportError:
 	try:
-		import psycopg2
+		import psycopg2 as pg
+		print " ******* WARNING!!!!!! Could not import the Postgres module 'pg' so imported psycop2 as pg instead! *******"
 	except ImportError:
 		pass
 	
@@ -17,6 +18,18 @@ from time import gmtime, strftime, strptime
 from operator import itemgetter
 import math
 
+import html
+
+class xtextmining(html.xnode):
+	
+	def __init__(self, type, id):
+		html.xnode.__init__(self)
+		self.type = type
+		self.id = id
+		
+	def __str__(self):
+		return get_html(self.type, self.id)
+		
 
 def get_html(type, id) :
 	q = executeSQL("SELECT document FROM matches WHERE type=%i AND id='%s';" % (type, id))
