@@ -137,8 +137,11 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
 		label_year = etree.SubElement(journal_wrapper, 'label', {'class': 'article_year'})
 		label_year.text = "(" + values['year'] + ')'
 		
-		abstract_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract'})
+		abstract_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract abstract_expand'})
 		abstract_wrapper.text = values['abstract']# + '&nbsp;'
+		
+		expand_link = etree.SubElement(abstract_wrapper, 'span', 'abstract_more')
+		expand_link.text = 'more'
 		
 		h_spacer = etree.SubElement(articlehtml, 'div', {'class': 'h_spacer'})
 		h_spacer.text = ' '
