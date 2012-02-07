@@ -31,42 +31,44 @@ class xtextmining(html.xnode):
 		return get_html(self.type, self.id)
 		
 
-def get_html(type, id) :
-	q = executeSQL("SELECT document FROM matches WHERE type=%i AND id='%s';" % (type, id))
+def get_html(type, id):
+	q = executeSQL("SELECT document FROM matches WHERE type=%i AND id='%s' ORDER BY document DESC LIMIT 10;" % (type, id))
 	q = getArticles(q.getresult())
 	return GetArticleAsHTML(q, False);
 
-def getConnection() :
+def getConnection():
 	conn_string = ['localhost','5432','ljj','textmining']
 	return pg.connect(host = conn_string[0], port = int(conn_string[1]), user = conn_string[2], passwd = '', dbname = conn_string[3])
 
-def executeSQL(cmd) :
+def executeSQL(cmd):
 	conn = getConnection()
 	q = conn.query(cmd)
 	conn.close()
 	return q
 
-def getArticles(pmidlist) :    
-	cmd = 'SELECT * FROM documents WHERE document IN ({0})'.format(pmidlist)
+def getArticles(pmidlist):
+	pmidlist = ",".join(map(lambda a: str(a[0]), pmidlist))
+	print pmidlist
+	cmd = 'SELECT * FROM documents WHERE document IN ({0});'.format(pmidlist)
 	q = executeSQL(cmd)
 	return q.dictresult()
 	
-def UTF_Encode(uni) :
+def UTF_Encode(uni):
 	return unicode(uni, 'utf-8')
 
-def CDATAWrap(value) :
+def CDATAWrap(value):
 	return '{0}{1}{2}'.format("<![CDATA[", value, "]]>")
 
-def dateparser(value) :
-	if value.isdigit() :
+def dateparser(value):
+	if value.isdigit():
 		return int(value)
 	else :
 		return 1
 
-def str_to_set(str) :
+def str_to_set(str):
 	return Set(str_to_array(str))
 
-def str_to_array(str) :
+def str_to_array(str):
 	arr = []
 	str = str.strip()
 	if len(str) > 0 :
@@ -74,7 +76,7 @@ def str_to_array(str) :
 	return arr
 	
 
-def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
+def GetArticleAsHTML(ranked_dictresult, CDATAWRAP):
 	parsed_result = ParseDBResult(ranked_dictresult, CDATAWRAP)
 	results = parsed_result['results']
 	articles = {}
@@ -86,7 +88,7 @@ def GetArticleAsHTML(ranked_dictresult, CDATAWRAP) :
 	articlehtml = etree.SubElement(root, 'ArticleHTML')    
 	return HTMLWrapArticles(articles, "ArticleHTML", CDATAWRAP)
 
-def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
+def ParseDBResult( pygresql_dictresult, CDATAWRAP ):
 	results = {}
 	PMID = None
 	for result in pygresql_dictresult :
@@ -108,7 +110,7 @@ def ParseDBResult( pygresql_dictresult, CDATAWRAP ) :
 	return_val['results'] = results
 	return return_val
 
-def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
+def HTMLWrapArticles(articles, tagname, CDATAWRAP):
 	articlehtml = etree.Element(tagname)    
 	
 	date_sorting = {}
@@ -117,13 +119,13 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP) :
 	ranked_sorting = []
 	
 	t_start = datetime.datetime.now()
-	for pmid, values in articles.iteritems() :
+	for pmid, values in articles.iteritems():
 		PMID = pmid
-		article_wrapper = etree.SubElement(articlehtml,'div', {'class': 'article_wrapper article_neutral', 'id': PMID})
+		article_wrapper = etree.SubElement(articlehtml,'div', {'class': 'article_wrapper', 'id': PMID})
 		title_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_title'})
 		title_wrapper.text = values['title']		
 		author_wrapper = etree.SubElement(article_wrapper, 'span', {'class': 'article_authors'})
-		for idx, el_author in enumerate(values['authors'][:3]) :
+		for idx, el_author in enumerate(values['authors'][:3]):
 			a = etree.SubElement(author_wrapper, 'a', {'href': 'http://www.ncbi.nlm.nih.gov/pubmed?term={0}[author]'.format(el_author), 'target': '_blank'})
 			a.text = UTF_Encode( el_author )
 			if idx == 2 :
