@@ -109,6 +109,17 @@ img {
 	border-bottom: 0px solid white;
 }
 
+
+.abstract_expand {
+	overflow: hidden;
+	height : 30px;
+}
+
+.abstract_more {
+	visibility: visible;
+	float: right;
+}
+
 .article_pmid, .article_journal, .article_pmid a, .article_journal a {
 	font-size: 11px;
 	font-family: verdana;
