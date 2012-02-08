@@ -27,33 +27,29 @@ tr td {
 }
 
 .page-header-left {
-	color: white;
+	color: LightBlue;
 	background: Gray;
-	background: -webkit-gradient(linear, left top, right top, from(Black), to(Gray));
-	/*background: -webkit-gradient(linear, left top, right top, from(Navy), to(RoyalBlue));*/
-	border-bottom: solid darkorange 3px;
+	background: -webkit-gradient(linear, left top, right top, from(MidnightBlue), to(DodgerBlue));
+	border-bottom: solid MidnightBlue 7px;
 }
 
 .page-header-right {
-	color: white;
+	color: White;
 	background: Gray;
 	
-	background: -webkit-gradient(radial, 80% 40%, 0, 80% 40%, 200, from(lightGray), to(Gray));
-	background: -moz-linear-gradient(right,  Lavender, RoyalBlue);
-	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr='Lavender', endColorstr='RoyalBlue');
+	background: -webkit-gradient(radial, 80% 40%, 0, 80% 40%, 200, from(White), to(DodgerBlue));
+	background: -moz-linear-gradient(right,  White, DodgerBlue);
+	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr='White', endColorstr='DodgerBlue');
 	
-	/*background: -webkit-gradient(radial, 80% 40%, 0, 80% 40%, 200, from(Lavender), to(RoyalBlue));
-	background: -moz-linear-gradient(right,  Lavender, RoyalBlue);
-	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr='Lavender', endColorstr='RoyalBlue');*/
-	text-shadow: #222222 4px 4px 4px;
-	border-bottom: solid darkorange 3px;
+	text-shadow: Navy 4px 4px 4px;
+	border-bottom: solid MidnightBlue 7px;
 }
 
 .sidebar-cell {
 	width: inherit;
 	height: 100%;
-	border-right: solid Silver 1px;
-	background: #F6F6F6;
+	border-right: solid MidnightBlue 1px;
+	background: #E6E6E6;
 	/*background: -webkit-gradient(linear, left top, right bottom, from(DarkOrange), to(LemonChiffon));
 	background: -moz-linear-gradient(left,  OrangeRed, DarkOrange);
 	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr='OrangeRed', endColorstr='DarkOrange');*/
