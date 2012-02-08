@@ -18,7 +18,7 @@ class xprotlocpage(xpage):
 		tbl = xtable({"width":"100%"})
 		tbl.addrow("&nbsp")
 		tbl.addrow("Disease", "8,553")
-		tbl.addrow("Genes and proteins", "2,714")
+		tbl.addrow("Proteins", "2,714")
 		self.page.sidebar.add(tbl)
 				
 		self.page.content.add(xsection("Disease gene association", '<img src="figure2.png" width="60%"></img>Using an andvanced textmining pipeline against the full body of indexed medical literatur and a ontology-derived, ontology-self-curated dictionary consisting of proteins, disease, chemicals etc. we have created the worlds first resource linking genes to diseases on a scale never seen before.'))

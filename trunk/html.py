@@ -42,12 +42,12 @@ class xnode:
 		html = []
 		html.append(self.begin_html())
 		for node in self.nodes:
-			#try:
-			s = str(node)
-			s = "\r\n".join(map(lambda a: "  " + a, s.split("\r\n")))
-			html.append(s)
-			#except Exception, e:
-			#	html.append('<span style="color: red">%s</span>' % str(e))
+			try:
+				s = str(node)
+				s = "\r\n".join(map(lambda a: "  " + a, s.split("\r\n")))
+				html.append(s)
+			except Exception, e:
+				html.append('<span style="color: red">%s</span>' % str(e))
 		html.append(self.end_html())
 		return "\r\n".join(html).rstrip()
 		
