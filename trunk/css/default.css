@@ -1,5 +1,5 @@
 body {
-	font-family: Tahoma, Verdana, Arial, sans-serif;
+	font-family: Verdana, Tahoma, Arial, sans-serif;
 	font-size: 12px;
 }
 
@@ -8,16 +8,13 @@ a {
 }
 
 hr {
-	border: None;
-}
-
-.wrapper {
-	width: 100%;
-	vertical-align: top;
+	height: 1px;
+	background: #B6B6B6;
+	border-width: 0px;
 }
 
 .page-outer-table {
-	width: inherit;
+	width: 100%;
 	vertical-align: top;
 	border-spacing: 0;
 }
@@ -28,31 +25,31 @@ tr td {
 
 .page-header-left {
 	color: LightBlue;
-	background: Gray;
+	background: DodgerBlue;
 	background: -webkit-gradient(linear, left top, right top, from(MidnightBlue), to(DodgerBlue));
-	border-bottom: solid MidnightBlue 7px;
+	border-top:    Solid 1px MidnightBlue;
+	border-bottom: Solid 1px MidnightBlue;
+	border-left:   Solid 1px MidnightBlue;
 }
 
 .page-header-right {
 	color: White;
-	background: Gray;
-	
+	background: DodgerBlue;
 	background: -webkit-gradient(radial, 80% 40%, 0, 80% 40%, 200, from(White), to(DodgerBlue));
 	background: -moz-linear-gradient(right,  White, DodgerBlue);
 	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr='White', endColorstr='DodgerBlue');
-	
-	text-shadow: Navy 4px 4px 4px;
-	border-bottom: solid MidnightBlue 7px;
+	text-shadow: Navy 3px 3px 5px;
+	border-top:    Solid 1px MidnightBlue;
+	border-bottom: Solid 1px MidnightBlue;
+	border-right:  Solid 1px MidnightBlue;
 }
 
 .sidebar-cell {
-	width: inherit;
+	width: 135px;
 	height: 100%;
-	border-right: solid MidnightBlue 1px;
+	/*border-right: solid #B6B6B6 2px;*/
+	border-right: Solid 1px MidnightBlue;
 	background: #E6E6E6;
-	/*background: -webkit-gradient(linear, left top, right bottom, from(DarkOrange), to(LemonChiffon));
-	background: -moz-linear-gradient(left,  OrangeRed, DarkOrange);
-	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr='OrangeRed', endColorstr='DarkOrange');*/
 }
 
 .sidebar {
@@ -76,7 +73,7 @@ tr td {
 
 .section {
 	padding: 10px 10px 10px 10px;
-	width: 500px;
+	width: inherit;
 }
 
 h1, h2, h3 {
@@ -100,7 +97,7 @@ img {
 
 .article_title, .article_title a {
 	color: blue;
-	font-size: 1.2em;
+	font-size: 1.1em;
 	font-weight: bold;
 	text-align: left;
 	text-decoration: none;

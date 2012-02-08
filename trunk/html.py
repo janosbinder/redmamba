@@ -7,63 +7,63 @@ import mamba.http
 
 class xnode:
 	
-	def __init__(self, attr={}):
-		self.attr  = attr
+	def __init__(self, attributes={}):
+		self.attributes = {}
+		for name in attributes:
+			self.attributes[name] = attributes[name]
 		self.nodes = []
 		
 	def add(self, node):
 		if node == self:
 			raise Exception, "HTML node %s is a child of itself" % str(node)
 		self.nodes.append(node)
-		
-	def get_attributes(self):
-		attr = []
-		for name in self.attr:
-			value = self.attr[name].replace('"', '\\"')
-			attr.append("%s=\"%s\"" % (name, value))
-		attr = " ".join(attr)
-		if len(attr):
-			attr = " " + attr
-		return attr
 	
 	def begin_html(self):
 		return ""
-		
+	
 	def end_html(self):
 		return ""
-	
-	def __setitem__(self, attribute, value):
-		self.attr[attribute] = value
+
+	def __setitem__(self, name, value):
+		print 
+		self.attributes[name] = value
 		
-	def __getitem__(self, attribute):
-		return self.attr[attribute]
+	def __getitem__(self, name):
+		return self.attributes[name]
 		
-	def __str__(self):
+	def tohtml(self):
 		html = []
 		html.append(self.begin_html())
 		for node in self.nodes:
-			try:
-				s = str(node)
-				s = "\r\n".join(map(lambda a: "  " + a, s.split("\r\n")))
-				html.append(s)
-			except Exception, e:
-				html.append('<span style="color: red">%s</span>' % str(e))
+			s = node.tohtml()
+			s = "\r\n".join(map(lambda a: "  " + a, s.split("\r\n")))
+			html.append(s)
 		html.append(self.end_html())
 		return "\r\n".join(html).rstrip()
 		
+	
 class xtag(xnode):
 	
-	def __init__(self, tag, attr={}):
-		xnode.__init__(self, attr)
+	def __init__(self, tag, attributes={}):
+		xnode.__init__(self, attributes)
 		self.tag = tag
 		
 	def begin_html(self):
-		return "<%s%s>" % (self.tag, self.get_attributes())
+		att = [""]
+		for name in self.attributes:
+			value = self.attributes[name].replace('"', '\\"')
+			att.append("%s=\"%s\"" % (name, value))
+		if len(att):
+			att = " ".join(att)
+		else:
+			att = ""
+		return "<%s%s>" % (self.tag, att)
 		
 	def end_html(self):
 		return "</%s>" % self.tag
 	
-class xfree(xnode):
+	
+class xfree(xtag):
 	
 	def __init__(self, text):
 		xnode.__init__(self)
@@ -71,15 +71,19 @@ class xfree(xnode):
 		
 	def begin_html(self):
 		return self.text
+	
+	def end_html(self):
+		return ""
 
 class xhr(xtag):
+	
 	def __init__(self):
 		xtag.__init__(self, "hr")
 		
 class xpar(xtag):
 	
-	def __init__(self, text=None, attr={}):
-		xtag.__init__(self, "p", attr)
+	def __init__(self, text=None, attributes={}):
+		xtag.__init__(self, "p", attributes)
 		if text != None:
 			if type(text) is str:
 				self.add(xfree(text))
@@ -88,13 +92,12 @@ class xpar(xtag):
 	
 class xdiv(xtag):
 	
-	def __init__(self, class_attr, id_attr=None):
-		attr = {}
-		if class_attr:
-			attr["class"] = class_attr
-		if id_attr:
-			attr["id"] = id_attr
-		xtag.__init__(self, "div", attr)
+	def __init__(self, class_attributes, id_attributes=None):
+		xtag.__init__(self, "div")
+		if class_attributes:
+			self["class"] = class_attributes
+		if id_attributes:
+			self["id"] = id_attributes
 		
 	
 class xh1(xtag):
@@ -120,17 +123,23 @@ class xh3(xtag):
 	
 class xcell(xtag):
 	
-	def __init__(self, child, attr={}):
-		xtag.__init__(self, "td", attr)
+	def __init__(self, child, attributes={}):
+		xtag.__init__(self, "td", attributes)
 		self.add(child)
+		
+	def add(self, node):
+		if isinstance(node, str):
+			self.nodes.append(xfree(node))
+		else:
+			self.nodes.append(node)
 	
 class xrow(xtag):
 	
-	def __init__(self, attr={}):
-		xtag.__init__(self, "tr", attr)
+	def __init__(self, attributes={}):
+		xtag.__init__(self, "tr", attributes)
 	
 	def add(self, node):
-		if type(node) is str:
+		if isinstance(node, str):
 			self.nodes.append(xcell(node))
 		else:
 			self.nodes.append(node)
@@ -138,15 +147,15 @@ class xrow(xtag):
 		
 class xtable(xtag):
 	
-	def __init__(self, attr={}):
-		xtag.__init__(self, "table", attr)
+	def __init__(self, attributes={}):
+		xtag.__init__(self, "table", attributes)
 		self.tbody = xtag("tbody")
 		self.add(self.tbody)
 		
 	def addrow(self, *arg):
 		row = xrow()
 		for item in arg:
-			if type(item) is str:
+			if isinstance(item, str):
 				row.add(xcell(item))
 			else:
 				row.add(item)
@@ -159,7 +168,7 @@ class xhead(xtag):
 		xtag.__init__(self, "head")
 		self.title   = ""
 		self.css     = ["css/default.css"]
-		self.scripts = []
+		self.scripts = []#["scripts/default.js"]
 		
 	def begin_html(self):
 		html = []
@@ -193,6 +202,21 @@ class xsection(xdiv):
 			par.add(text)
 		self.add(par)
 		
+class xform(xtag):
+	
+	def __init__(self, action, method="POST"):
+		xtag.__init__(self, "form")
+		self.action = action
+		self.method = method
+		self["action"] = action
+		self["method"] = method
+		self.par = xpar()
+		self.nodes.append(self.par)
+		
+	def add(self, node):
+		self.par.add(node)
+		
+		
 class xpage(xtag):
 	
 	class xpagetable(xtable):
@@ -213,12 +237,23 @@ class xpage(xtag):
 			row.add(xcell(self.content))
 			self.tbody.add(row)
 	
-	def __init__(self):
+	def __init__(self, title):
 		xtag.__init__(self, "html")
+
 		self.head = xhead()
 		self.add(self.head)
+
 		self.body = xbody()
 		self.add(self.body)
+
+		self.main_table = xpage.xpagetable(title)
+		self.body.add(self.main_table)
+	
+	def get_sidebar(self):
+		return self.main_table.sidebar
+		
+	def get_content(self):
+		return self.main_table.content
 		
 	def begin_html(self):
 		html = []
