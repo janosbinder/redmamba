@@ -27,15 +27,12 @@ class xtextmining(html.xnode):
 		self.type = type
 		self.id = id
 		
-	def __str__(self):
-		return get_html(self.type, self.id)
-		
+	def begin_html(self):
+		q = executeSQL("SELECT document FROM matches WHERE type=%i AND id='%s' ORDER BY document DESC LIMIT 10;" % (self.type, self.id))
+		q = getArticles(q.getresult())
+		return GetArticleAsHTML(q, False);
 
-def get_html(type, id):
-	q = executeSQL("SELECT document FROM matches WHERE type=%i AND id='%s' ORDER BY document DESC LIMIT 10;" % (type, id))
-	q = getArticles(q.getresult())
-	return GetArticleAsHTML(q, False);
-
+	
 def getConnection():
 	conn_string = ['localhost','5432','ljj','textmining']
 	return pg.connect(host = conn_string[0], port = int(conn_string[1]), user = conn_string[2], passwd = '', dbname = conn_string[3])
@@ -48,7 +45,6 @@ def executeSQL(cmd):
 
 def getArticles(pmidlist):
 	pmidlist = ",".join(map(lambda a: str(a[0]), pmidlist))
-	print pmidlist
 	cmd = 'SELECT * FROM documents WHERE document IN ({0});'.format(pmidlist)
 	q = executeSQL(cmd)
 	return q.dictresult()
@@ -86,7 +82,7 @@ def GetArticleAsHTML(ranked_dictresult, CDATAWRAP):
 			
 	root = etree.Element('Response')
 	articlehtml = etree.SubElement(root, 'ArticleHTML')    
-	return HTMLWrapArticles(articles, "ArticleHTML", CDATAWRAP)
+	return HTMLWrapArticles(articles, CDATAWRAP)
 
 def ParseDBResult( pygresql_dictresult, CDATAWRAP ):
 	results = {}
@@ -110,8 +106,10 @@ def ParseDBResult( pygresql_dictresult, CDATAWRAP ):
 	return_val['results'] = results
 	return return_val
 
-def HTMLWrapArticles(articles, tagname, CDATAWRAP):
-	articlehtml = etree.Element(tagname)    
+def HTMLWrapArticles(articles, CDATAWRAP):
+	
+	tagname = "ArticleHTML"
+	articlehtml = etree.Element(tagname)
 	
 	date_sorting = {}
 	journal_sorting = {}
@@ -142,8 +140,8 @@ def HTMLWrapArticles(articles, tagname, CDATAWRAP):
 		abstract_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract abstract_expand'})
 		abstract_wrapper.text = values['abstract']# + '&nbsp;'
 		
-		expand_link = etree.SubElement(abstract_wrapper, 'span', 'abstract_more')
-		expand_link.text = 'more'
+		#expand_link = etree.SubElement(abstract_wrapper, 'span', 'abstract_more')
+		#expand_link.text = 'more'
 		
 		h_spacer = etree.SubElement(articlehtml, 'div', {'class': 'h_spacer'})
 		h_spacer.text = ' '
