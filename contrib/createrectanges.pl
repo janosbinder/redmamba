@@ -13,7 +13,7 @@ my @vertical_labels = exists $ARGV[5] ? split(/;/, $ARGV[5]) : ();
 my $svg_header = '<?xml version="1.0" standalone="no"?>'."\n";
 $svg_header .= '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"'."\n";
 $svg_header .= '"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'."\n";
-$svg_header .= '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="400" height="300">'."\n";
+$svg_header .= '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="400" height="200">'."\n";
 my $svg_tail = '</svg>';
 my $svg_body = '';
 my $text_space_x = 90;
