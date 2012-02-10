@@ -16,7 +16,7 @@ class Subcell(mamba.task.Request):
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
 		page = html.xpage("Localization, Localization, Localization")
-		page.get_content().add(xsvg("www/figures/figure.svg", get_mock_different_methods(9606, 'fake')))
+		page.get_content().add(xsvg("www/figures/overview_figure.svg", get_mock_different_methods(9606, 'fake')))
 		#page.get_content().add(html.xfree('<img src="figures/figure.png">'))
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
