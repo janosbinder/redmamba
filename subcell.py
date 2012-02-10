@@ -16,23 +16,13 @@ class Subcell(mamba.task.Request):
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
 		page = html.xpage("Localization, Localization, Localization")
+		page.get_content().add(html.xsection("Results from different subcellular localization methods", "Press refresh if you are not satisfied with the results. Then the monkeys will be shocked in the box and they will paint the squares with different green"))
 		page.get_content().add(xsvg("www/figures/overview_figure.svg", get_mock_different_methods(9606, 'fake')))
+		page.get_content().add(html.xsection("Results from text mining", "Press refresh if you are not satisfied with the results. Then the boxes will be colored here using some random noise"))
+		page.get_content().add(xsvg("www/figures/subcell.svg", get_mock_subcell_loc(9606, 'fake')))
 		#page.get_content().add(html.xfree('<img src="figures/figure.png">'))
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
-	
-
-class xmock_subcell(html.xnode):
-	def __init__(self, type, id):
-		html.xnode.__init__(self)
-		self.type = type
-		self.id = id
-		
-class xxmock_overviewtable(html.xnode):
-	def __init__(self, type, id):
-		html.xnode.__init__(self)
-		self.type = type
-		self.id = id
 
 class xsvg(html.xnode):
 	def __init__(self, filename, compartment_color_map):
