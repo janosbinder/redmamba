@@ -28,7 +28,7 @@ class xtextmining(html.xnode):
 		self.id = id
 		
 	def begin_html(self):
-		q = executeSQL("SELECT document FROM matches WHERE type=%i AND id='%s' ORDER BY document DESC LIMIT 10;" % (self.type, self.id))
+		q = executeSQL("SELECT document FROM matches WHERE type=%i AND id='%s' ORDER BY document DESC LIMIT 30;" % (self.type, self.id))
 		q = getArticles(q.getresult())
 		return GetArticleAsHTML(q, False);
 

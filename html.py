@@ -25,7 +25,6 @@ class xnode:
 		return ""
 
 	def __setitem__(self, name, value):
-		print 
 		self.attributes[name] = value
 		
 	def __getitem__(self, name):
@@ -35,9 +34,16 @@ class xnode:
 		html = []
 		html.append(self.begin_html())
 		for node in self.nodes:
-			s = node.tohtml()
-			s = "\r\n".join(map(lambda a: "  " + a, s.split("\r\n")))
-			html.append(s)
+			text = None
+			if isinstance(node, xnode):
+				text = node.tohtml()
+			elif isinstance(node, str):
+				text = node
+			elif isinstance(node, unicode):
+				text = node.encode("UTF-8")
+			else:
+				raise Exception, "%s has child node which is of unsuported: %s" % (type(self), type(node))
+			html.append("\r\n".join(map(lambda a: "  " + a, text.split("\r\n"))))
 		html.append(self.end_html())
 		return "\r\n".join(html).rstrip()
 		
@@ -51,7 +57,10 @@ class xtag(xnode):
 	def begin_html(self):
 		att = [""]
 		for name in self.attributes:
-			value = self.attributes[name].replace('"', '\\"')
+			try:
+				value = self.attributes[name].replace('"', '\\"')
+			except AttributeError:
+				print self, self.attributes[name]
 			att.append("%s=\"%s\"" % (name, value))
 		if len(att):
 			att = " ".join(att)
@@ -92,7 +101,7 @@ class xpar(xtag):
 	
 class xdiv(xtag):
 	
-	def __init__(self, class_attributes, id_attributes=None):
+	def __init__(self, class_attributes=None, id_attributes=None):
 		xtag.__init__(self, "div")
 		if class_attributes:
 			self["class"] = class_attributes
@@ -187,7 +196,30 @@ class xbody(xtag):
 	
 	def __init__(self):
 		xtag.__init__(self, "body")
+		
 
+class xshadowbox(xdiv):
+	
+	def __init__(self, content=None):
+		xdiv.__init__(self, "shadowbox-top-right")
+		d1 = xdiv("shadowbox-top-left")
+		d2 = xdiv("shadowbox-bottom-right")
+		d3 = xdiv("shadowbox-bottom-left")
+		d4 = xdiv("shadowbox-content")
+		d1.add(d2)
+		d2.add(d3)
+		d3.add(d4)
+		d5 = xdiv()
+		d5["style"] = "padding: 15px 7px 10px"
+		d4.add(d5)
+		self.content = d5
+		self.nodes.append(d1)
+		if content != None:
+			self.add(content)
+		
+	def add(self, node):
+		self.content.add(node)
+		
 
 class xsection(xdiv):
 	
@@ -201,21 +233,7 @@ class xsection(xdiv):
 		else:
 			par.add(text)
 		self.add(par)
-		
-class xform(xtag):
 	
-	def __init__(self, action, method="POST"):
-		xtag.__init__(self, "form")
-		self.action = action
-		self.method = method
-		self["action"] = action
-		self["method"] = method
-		self.par = xpar()
-		self.nodes.append(self.par)
-		
-	def add(self, node):
-		self.par.add(node)
-		
 		
 class xpage(xtag):
 	
@@ -236,7 +254,7 @@ class xpage(xtag):
 			row.add(xcell(self.sidebar, {"class" : "sidebar-cell"}))
 			row.add(xcell(self.content))
 			self.tbody.add(row)
-	
+			
 	def __init__(self, title):
 		xtag.__init__(self, "html")
 
