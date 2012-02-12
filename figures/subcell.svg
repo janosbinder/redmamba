@@ -1,6 +1,7 @@
 <?xml version="1.0" standalone="yes"?>
 
-<svg version="1.1" height="768" width="1024" viewBox="0.0 0.0 1024.0 768.0" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" clip-path="url(#p.0)" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg version="1.1" height="386" width="512" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" clip-path="url(#p.0)" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g transform="scale(0.5, 0.5)">
 <g title="ex" fill="#ffffff">
     <rect x="0" y="0" width="970" height="770"/>
 </g>
@@ -94,5 +95,6 @@
 </g>
 <text title="mitochondrion-text" x="246" y="602" fill="black">[12] Mitochondrion
 </text>
+</g>
 </svg>
 
