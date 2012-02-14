@@ -150,6 +150,8 @@ class xrow(xtag):
 	def add(self, node):
 		if isinstance(node, str):
 			self.nodes.append(xcell(node))
+		elif type(node) is int or type(node) is float:
+			self.nodes.append(xcell(str(node)))
 		else:
 			self.nodes.append(node)
 	
@@ -177,7 +179,7 @@ class xhead(xtag):
 		xtag.__init__(self, "head")
 		self.title   = ""
 		self.css     = ["css/default.css"]
-		self.scripts = []#["scripts/default.js"]
+		self.scripts = ["scripts/default.js"]
 		
 	def begin_html(self):
 		html = []
@@ -264,14 +266,20 @@ class xpage(xtag):
 		self.body = xbody()
 		self.add(self.body)
 
-		self.main_table = xpage.xpagetable(title)
-		self.body.add(self.main_table)
+		self.frame = xpage.xpagetable(title)
+		self.body.add(self.frame)
 	
 	def get_sidebar(self):
-		return self.main_table.sidebar
+		return self.frame.sidebar
 		
 	def get_content(self):
-		return self.main_table.content
+		return self.frame.content
+	
+	def add_content(self, node):
+		self.frame.content.add(node)
+		
+	def add_sidebar(self, node):
+		self.frame.sidebar.add(node)
 		
 	def begin_html(self):
 		html = []

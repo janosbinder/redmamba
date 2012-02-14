@@ -121,7 +121,8 @@ def HTMLWrapArticles(articles, CDATAWRAP):
 		PMID = pmid
 		article_wrapper = etree.SubElement(articlehtml,'div', {'class': 'article_wrapper', 'id': PMID})
 		title_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_title'})
-		title_wrapper.text = values['title']		
+		title_wrapper.text = values['title']
+		
 		author_wrapper = etree.SubElement(article_wrapper, 'span', {'class': 'article_authors'})
 		for idx, el_author in enumerate(values['authors'][:3]):
 			a = etree.SubElement(author_wrapper, 'a', {'href': 'http://www.ncbi.nlm.nih.gov/pubmed?term={0}[author]'.format(el_author), 'target': '_blank'})
@@ -129,7 +130,7 @@ def HTMLWrapArticles(articles, CDATAWRAP):
 			if idx == 2 :
 				a.text += " ..."
 				
-		journal_wrapper = etree.SubElement(article_wrapper, 'span', {'class': 'article_journal'})
+		journal_wrapper = etree.SubElement(author_wrapper, 'span', {'class': 'article_journal'})
 		journal = values['journal']
 		link = 'http://www.ncbi.nlm.nih.gov/pubmed?term={0}[journal]'.format(journal.split('.')[0])
 		a = etree.SubElement(journal_wrapper, 'a', {'href': link, 'target': '_blank'})
@@ -137,11 +138,20 @@ def HTMLWrapArticles(articles, CDATAWRAP):
 		label_year = etree.SubElement(journal_wrapper, 'label', {'class': 'article_year'})
 		label_year.text = "(" + values['year'] + ')'
 		
-		abstract_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract abstract_expand'})
-		abstract_wrapper.text = values['abstract']# + '&nbsp;'
-		
-		#expand_link = etree.SubElement(abstract_wrapper, 'span', 'abstract_more')
-		#expand_link.text = 'more'
+		doc = values['abstract']
+		if len(doc) == 0:
+			abstract_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract abstract_expand'})
+			abstract_wrapper.text = "[No abstract text.]"
+		elif len(doc) < 170:
+			abstract_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract abstract_expand'})
+			abstract_wrapper.text = doc
+		else:
+			abstract_teaser = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract', 'style':'display:inline'})
+			abstract_teaser.text = doc[:170]
+			abstract_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract abstract_expand', 'style':'display:none;'})
+			abstract_wrapper.text = doc
+			expand_link = etree.SubElement(article_wrapper, 'span', {'style':'float:right;', 'onclick' : "toggle_abstract('%s')" % PMID})
+			expand_link.text = '(more)'
 		
 		h_spacer = etree.SubElement(articlehtml, 'div', {'class': 'h_spacer'})
 		h_spacer.text = ' '

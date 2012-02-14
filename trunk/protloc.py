@@ -68,20 +68,21 @@ class HtmlSearchPage(HtmlBasePage):
 				pass
 			elif filter == "gene":
 				pass
+			self.add_content(html.xh2("Result for: %s" % rest["query"]))
 			tbl = html.xtable()
-			tbl.addrow("Query: " + rest["query"], "Filter: " + rest["filter"])
-			
-			tbl.addrow("...", "......", ".......")
-			tbl.addrow("...", "......", ".......")
-			tbl.addrow("...", "......", ".......")
-			tbl.addrow("...", "......", ".......")
-			tbl.addrow("...", "......", ".......")
-			tbl.addrow("...", "......", ".......")
-			tbl.addrow("...", "......", ".......")
-			self.get_content().add(tbl)
+			conn = pg.connect(host='localhost', user='ljj', dbname='knowledge')
+			q = conn.query("SELECT * FROM knowledge WHERE type1=9606 and id1='ENSP00000000233' AND type2=-23 LIMIT 30;")
+			for x in q.getresult():
+				r = html.xrow()
+				r.add(x[0])
+				r.add(x[1])
+				r.add(x[3])
+				r.add('<a href="%s">%s</a>' % (x[-1], x[-1]))
+				tbl.addrow(r)
+			self.add_content(html.xshadowbox(tbl))
 		else:
 			self.head.title = "Search diseases and genes"
-			self.get_content().add(html.xshadowbox(xsearchfield()))
+			self.add_content(html.xshadowbox(xsearchfield()))
 			
 
 class HtmlProteinPage(HtmlBasePage):
@@ -89,7 +90,7 @@ class HtmlProteinPage(HtmlBasePage):
 	def __init__(self, type, id):
 		HtmlBasePage.__init__(self)
 		self.head.title = "Protein %s" % id
-		self.get_content().add(html.xshadowbox(datamining.xtextmining(9606, "ENSP00000253513")))
+		self.add_content(html.xshadowbox(datamining.xtextmining(9606, "ENSP00000332369")))
 
 
 class HtmlDiseasePage(HtmlBasePage):
@@ -97,9 +98,9 @@ class HtmlDiseasePage(HtmlBasePage):
 	def __init__(self, disease):
 		HtmlBasePage.__init__(self)
 		self.head.title = disease
-		self.get_content().add(html.xsection("Disease gene association", '<img src="figure2.png" width="250px"></img>Using an andvanced textmining pipeline against the full body of indexed medical literatur and a ontology-derived, ontology-self-curated dictionary consisting of proteins, disease, chemicals etc. we have created the worlds first resource linking genes to diseases on a scale never seen before.'))
-		self.get_content().add(html.xsection("Alzheimer's disease", "A dementia that results in progressive memory loss, impaired thinking, disorientation, and changes in personality and mood starting in late middle age and leads in advanced cases to a profound decline in cognitive and physical functioning and is marked histologically by the degeneration of brain neurons especially in the cerebral cortex and by the presence of neurofibrillary tangles and plaques containing beta-amyloid."))
-		self.get_content().add(datamining.xtextmining(9606, "ENSP00000335657"))
+		self.add_content(html.xsection("Disease gene association", '<img src="figure2.png" width="250px"></img>Using an andvanced textmining pipeline against the full body of indexed medical literatur and a ontology-derived, ontology-self-curated dictionary consisting of proteins, disease, chemicals etc. we have created the worlds first resource linking genes to diseases on a scale never seen before.'))
+		self.add_content(html.xsection("Alzheimer's disease", "A dementia that results in progressive memory loss, impaired thinking, disorientation, and changes in personality and mood starting in late middle age and leads in advanced cases to a profound decline in cognitive and physical functioning and is marked histologically by the degeneration of brain neurons especially in the cerebral cortex and by the presence of neurofibrillary tangles and plaques containing beta-amyloid."))
+		self.add_content(datamining.xtextmining(9606, "ENSP00000335657"))
 
 
 
