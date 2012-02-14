@@ -9,6 +9,7 @@ import mamba.setup
 import mamba.task
 import mamba.http
 import pg
+import math
 
 class MockSubcell(mamba.task.Request):
 	
@@ -51,23 +52,28 @@ class Subcell(mamba.task.Request):
 	go_location_dict = {'GO:0005576':'ex', 'GO:0005634':'nu', 'GO:0005739':'mi', 'GO:0005764':'ly', 'GO:0005768':'en', 'GO:0005773':'va', 'GO:0005777':'pe', 'GO:0005783':'er', 'GO:0005794':'go', 'GO:0005829':'cy', 'GO:0005856':'cs', 'GO:0005886':'pm', 'GO:0009507':'ch'}
 	
 	def main(self):
+		# these variables should be passed as parameters		
+		type = 9606
+		id = 'ENSP00000269305'
+		
 		rest = mamba.task.RestDecoder(self)
 		page = html.xpage("Localization, Localization, Localization")
 		page.get_content().add(html.xsection("Results from text mining", "Here is some fact about p53"))
-		page.get_content().add(xsvg("www/figures/subcell.svg", self.get_localizations(9606, 'ENSP00000269305')))
+		page.get_content().add(xsvg("www/figures/subcell.svg", self.get_localizations(type, id)))
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
 		
 	def get_localizations(self, type, id):
 		compartment_score_map = {}
+		for go in Subcell.go_location_dict:
+			compartment_score_map[Subcell.go_location_dict[go]] = 0.0
 		conn = pg.connect(host = self.conn_string[0], port = int(self.conn_string[1]), user = self.conn_string[2], passwd = '', dbname = self.conn_string[3])
-		query = conn.query("SELECT * FROM knowledge WHERE type1 = %s AND id1 = '%s'" % (type, id))
+		query = conn.query("SELECT * FROM knowledge WHERE type1 = %s AND id1 = '%s'" % (pg.escape_string(str(type)), pg.escape_string(id)))
 		for result in query.dictresult():
-			#print result['id1']+result['id2']+"\n"
-			
 			if (result['id2'] in self.go_location_dict):
-				compartment_score_map[self.go_location_dict[result['id2']]] = float(result['score'])/5
-				
+				weight = float(result['score'])/5
+				compartment_score_map[self.go_location_dict[result['id2']]] = weight
+		compartment_score_map = {'va': 0.0, 'ch': 0.0, 'mi': 0.0, 'cs': 0.0, 'cy': 0.4, 'en': 0.1, 'ex': 0.0, 'pe': 0.0, 'go': 0.3, 'ly': 0.0, 'er': 0.2, 'nu': 0.5, 'pm': 0.0}
 		conn.close()
 		return compartment_score_map
 		
@@ -85,15 +91,8 @@ class xsvg(html.xnode):
 class svg_colorer:
 	
 	@staticmethod
-	def define_color(weight):
-		r=0
-		dr=0
-		g=0
-		dg=255
-		b=0
-		db=0
-		color = "#%2.2x%2.2x%2.2x" % (r+dr*float(weight), g+dg*float(weight), b+db*float(weight))
-		return color
+	def define_color(w):
+		return "#%02x%02x%02x" % (255*(1-w), 255*(1-0.5*w), 255*(1-w))
 	
 	@staticmethod
 	def concatenate_list(mylist, prefix, suffix, separator):
@@ -110,9 +109,9 @@ class svg_colorer:
 	def create_colored_html(filename, compartment_color_map):
 		buffer = [];
 		f = open(filename, 'r')
-		tmp1 = tempfile.mktemp()
-		tmp2 = tempfile.mktemp()
-		os.system("convert -size 400x300 %s %s" % (tmp1, tmp2))
+		#tmp1 = tempfile.mktemp()
+		#tmp2 = tempfile.mktemp()
+		#os.system("convert -size 400x300 %s %s" % (tmp1, tmp2))
 		exp = svg_colorer.concatenate_list(compartment_color_map.keys(),'<\w* title="','".*>','|')
 		for line in f:
 			if re.search("^ *<[?!]", line): #ignore XML header
@@ -122,8 +121,11 @@ class svg_colorer:
 			if match:
 				for key, value in compartment_color_map.iteritems():
 					match2 = re.search('title="'+key+'"',line)
-					if match2:				   
-						buffer.append(re.sub('fill="#.{6}"', 'fill="%s"' % svg_colorer.define_color(value), line))
+					if match2:
+						if value > 0:
+							buffer.append(re.sub('fill="#.{6}"', 'fill="%s"' % svg_colorer.define_color(value), line))
+						else:
+							buffer.append(line)
 			else:
 				buffer.append(line)
 		f.close()
