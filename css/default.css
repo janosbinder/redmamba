@@ -117,8 +117,8 @@ tr td {
 .content {
 	display: inline-block;
 	height: 100%;
-	margin-top: 10px;
-	margin-left: 20px;
+	margin-top: 5%;
+	margin-left: 8%;
 }
 
 .section {
@@ -164,15 +164,9 @@ img {
 	border-bottom: 0px solid white;
 }
 
-
 .abstract_expand {
-	overflow: hidden;
-	height : 30px;
-}
-
-.abstract_more {
-	visibility: visible;
-	float: right;
+    overflow: hidden;
+    height : 30px;
 }
 
 .article_pmid, .article_journal, .article_pmid a, .article_journal a {
