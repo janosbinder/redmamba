@@ -1,22 +1,42 @@
 import os
 import sys
+import types
 import datetime
-import mamba.task
-import mamba.http
 
 
-class xnode:
+class XNode:
 	
-	def __init__(self, attributes={}):
-		self.attributes = {}
-		for name in attributes:
-			self.attributes[name] = attributes[name]
+	def __init__(self, parent, attr={}):
+		self.parent = None
+		if parent != None:
+			#if not isinstance(type, types.ClassType):
+			#	raise Exception, "XNode.__init__() failed because 'parent' is not a class but %s" % type(parent)
+			#if not isinstance(parent, XNode):
+			#	raise Exception, "XNode.__init__() failed because 'parent' is not an XNode but %s" % parent
+			parent.add(self)
+		self.attr = {}
+		for name in attr:
+			self.attr[name] = attr[name]
 		self.nodes = []
+
+	def remove(self):
+		if self.parent != None and isinstance(self.parent, XNode):
+			i = 0
+			for node in self.parent.nodes:
+				if node == self:
+					del self.parent.nodes[i]
+				else:
+					i += 1
+		self.nodes = []
+		self.parent = None
 		
 	def add(self, node):
 		if node == self:
 			raise Exception, "HTML node %s is a child of itself" % str(node)
 		self.nodes.append(node)
+		if node.parent != None and node.parent != self:
+			raise Exception, "Cannot add node due to parent mismatch: %s has parent %s which is not %s." % (node, node.parent, self)
+		node.parent = self
 	
 	def begin_html(self):
 		return ""
@@ -25,17 +45,19 @@ class xnode:
 		return ""
 
 	def __setitem__(self, name, value):
-		self.attributes[name] = value
+		self.attr[name] = value
 		
 	def __getitem__(self, name):
-		return self.attributes[name]
+		return self.attr[name]
 		
 	def tohtml(self):
 		html = []
-		html.append(self.begin_html())
+		text = self.begin_html()
+		if text != None:
+			html.append(text)
 		for node in self.nodes:
 			text = None
-			if isinstance(node, xnode):
+			if isinstance(node, XNode):
 				text = node.tohtml()
 			elif isinstance(node, str):
 				text = node
@@ -43,24 +65,30 @@ class xnode:
 				text = node.encode("UTF-8")
 			else:
 				raise Exception, "%s has child node which is of unsuported: %s" % (type(self), type(node))
-			html.append("\r\n".join(map(lambda a: "  " + a, text.split("\r\n"))))
-		html.append(self.end_html())
-		return "\r\n".join(html).rstrip()
+			if text != None:
+				text = "\r\n".join(map(lambda a: "  " + a, text.split("\r\n")))
+				html.append(text)
+		text = self.end_html()
+		if text != None:
+			html.append(text)
+		if len(html):
+			return "\r\n".join(html).rstrip()
+		return None
 		
 	
-class xtag(xnode):
+class XTag(XNode):
 	
-	def __init__(self, tag, attributes={}):
-		xnode.__init__(self, attributes)
+	def __init__(self, parent, tag, attr={}):
+		XNode.__init__(self, parent, attr)
 		self.tag = tag
 		
 	def begin_html(self):
 		att = [""]
-		for name in self.attributes:
+		for name in self.attr:
 			try:
-				value = self.attributes[name].replace('"', '\\"')
+				value = self.attr[name].replace('"', '\\"')
 			except AttributeError:
-				print self, self.attributes[name]
+				print self, self.attr[name]
 			att.append("%s=\"%s\"" % (name, value))
 		if len(att):
 			att = " ".join(att)
@@ -71,11 +99,24 @@ class xtag(xnode):
 	def end_html(self):
 		return "</%s>" % self.tag
 	
+
+class XOuterTag(XTag):
 	
-class xfree(xtag):
+	def begin_html(self):
+		if len(self.nodes):
+			return XTag.begin_html(self)
+		return None
 	
-	def __init__(self, text):
-		xnode.__init__(self)
+	def end_html(self):
+		if len(self.nodes):
+			return XTag.end_html(self)
+		return None
+	
+	
+class XFree(XTag):
+	
+	def __init__(self, parent, text):
+		XNode.__init__(self, parent)
 		self.text = text
 		
 	def begin_html(self):
@@ -84,99 +125,129 @@ class xfree(xtag):
 	def end_html(self):
 		return ""
 
-class xhr(xtag):
+class XHr(XTag):
 	
-	def __init__(self):
-		xtag.__init__(self, "hr")
+	def __init__(self, parent):
+		XTag.__init__(self, parent, "hr")
 		
-class xpar(xtag):
+class XP(XTag):
 	
-	def __init__(self, text=None, attributes={}):
-		xtag.__init__(self, "p", attributes)
+	def __init__(self, parent, text=None, attr={}):
+		XTag.__init__(self, parent, "p", attr)
 		if text != None:
 			if type(text) is str:
-				self.add(xfree(text))
+				XFree(self, text)
 			else:
-				self.add(text)
+				#self.add(text)
+				self.nodes.append(text)
+				text.parent = self
 	
-class xdiv(xtag):
+class XDiv(XTag):
 	
-	def __init__(self, class_attributes=None, id_attributes=None):
-		xtag.__init__(self, "div")
+	def __init__(self, parent, class_attributes=None, id_attributes=None):
+		XTag.__init__(self, parent, "div")
 		if class_attributes:
 			self["class"] = class_attributes
 		if id_attributes:
 			self["id"] = id_attributes
 		
 	
-class xh1(xtag):
+class XH1(XTag):
 	
-	def __init__(self, heading):
-		xtag.__init__(self, "h1")
-		self.add(xfree(heading))
+	def __init__(self, parent, heading):
+		XTag.__init__(self, parent, "h1")
+		XFree(self, heading)
 
-class xh2(xtag):
+class XH2(XTag):
 	
-	def __init__(self, heading):
-		xtag.__init__(self, "h2")
-		self.add(xfree(heading))
+	def __init__(self,parent,  heading):
+		XTag.__init__(self, parent, "h2")
+		XFree(self, heading)
 
 
-class xh3(xtag):
+class XH3(XTag):
 	
-	def __init__(self, heading):
-		xtag.__init__(self, "h3")
-		self.add(xfree(heading))
-
+	def __init__(self, parent, heading):
+		XTag.__init__(self, parent, "h3")
+		XFree(self, heading)
 			
 	
-class xcell(xtag):
+class XTd(XTag):
 	
-	def __init__(self, child, attributes={}):
-		xtag.__init__(self, "td", attributes)
-		self.add(child)
+	def __init__(self, parent, attr={}):
+		XTag.__init__(self, parent, "td", attr)
+	
+class XTr(XTag):
+	
+	def __init__(self, parent, attr={}):
+		if isinstance(parent, XTable):
+			parent = parent.tbody
+		XTag.__init__(self, parent, "tr", attr)
+
+	
+class XCaption(XTag):
+	
+	def __init__(self, parent, text=None, attr={}):
+		XTag.__init__(self, parent, "caption", attr)
+		self.text = text
 		
-	def add(self, node):
-		if isinstance(node, str):
-			self.nodes.append(xfree(node))
-		else:
-			self.nodes.append(node)
-	
-class xrow(xtag):
-	
-	def __init__(self, attributes={}):
-		xtag.__init__(self, "tr", attributes)
-	
-	def add(self, node):
-		if isinstance(node, str):
-			self.nodes.append(xcell(node))
-		elif type(node) is int or type(node) is float:
-			self.nodes.append(xcell(str(node)))
-		else:
-			self.nodes.append(node)
-	
-		
-class xtable(xtag):
-	
-	def __init__(self, attributes={}):
-		xtag.__init__(self, "table", attributes)
-		self.tbody = xtag("tbody")
-		self.add(self.tbody)
-		
-	def addrow(self, *arg):
-		row = xrow()
-		for item in arg:
-			if isinstance(item, str):
-				row.add(xcell(item))
-			else:
-				row.add(item)
-		self.tbody.add(row)
+	def begin_html(self):
+		if self.text:
+			return XTag.begin_html(self)
+			
+	def end_html(self):
+		if self.text:
+			return XTag.end_html(self)
 		
 
-class xhead(xtag):
+class XTable(XTag):
 	
-	def __init__(self):
-		xtag.__init__(self, "head")
+	def __init__(self, parent, attr={}):
+		XTag.__init__(self, parent, "table", attr)
+		#self.caption = XCaption(self, "caption")
+		self.thead   = XOuterTag(self, "thead")
+		self.tfoot   = XOuterTag(self, "tfoot")
+		self.tbody   = XOuterTag(self, "tbody")
+		
+	def _new_row(self):
+		return XTr(self.tbody)
+		
+	def addrow(self, *args):
+		row = self._new_row()
+		for arg in args:
+			if not isinstance(arg, XNode):
+				XFree(XTd(row), str(arg))
+			else:
+				row.add(str(arg))
+				
+	def addhead(self, *args):
+		row = XTr(self.thead)
+		row["style"] = "font-family: helvetica; font-weight: bold;"
+		for arg in args:
+			if not isinstance(arg, XNode):
+				XFree(XTd(row), str(arg))
+			else:
+				row.add(str(arg))
+			
+				
+				
+class XDataTable(XTable):
+	
+	def __init__(self, parent):
+		XTable.__init__(self, parent)
+		self["class"] = "data"
+		
+	def _new_row(self):
+		row = XTable._new_row(self)
+		if len(self.tbody.nodes) % 2 == 1:
+			row["class"] = "odd"
+		return row
+	
+
+class XHead(XTag):
+	
+	def __init__(self, parent):
+		XTag.__init__(self, parent, "head")
 		self.title   = ""
 		self.css     = ["css/default.css"]
 		self.scripts = ["scripts/default.js"]
@@ -194,86 +265,62 @@ class xhead(xtag):
 		return "\r\n".join(html)
 
 
-class xbody(xtag):
+class XBody(XTag):
 	
-	def __init__(self):
-		xtag.__init__(self, "body")
+	def __init__(self, page):
+		XTag.__init__(self, page, "body")
 		
 
-class xshadowbox(xdiv):
+class XBox(XDiv):
 	
-	def __init__(self, content=None):
-		xdiv.__init__(self, "shadowbox-top-right")
-		d1 = xdiv("shadowbox-top-left")
-		d2 = xdiv("shadowbox-bottom-right")
-		d3 = xdiv("shadowbox-bottom-left")
-		d4 = xdiv("shadowbox-content")
-		d1.add(d2)
-		d2.add(d3)
-		d3.add(d4)
-		d5 = xdiv()
+	def __init__(self, parent, content=None):
+		XDiv.__init__(self, parent, "shadowbox-top-right")
+		d1 = XDiv(self, "shadowbox-top-left")
+		d2 = XDiv(d1, "shadowbox-bottom-right")
+		d3 = XDiv(d2, "shadowbox-bottom-left")
+		d4 = XDiv(d3, "shadowbox-content")
+		d5 = XDiv(d4)
 		d5["style"] = "padding: 15px 7px 10px"
-		d4.add(d5)
 		self.content = d5
-		self.nodes.append(d1)
 		if content != None:
-			self.add(content)
-		
-	def add(self, node):
-		self.content.add(node)
+			self.content.add(content)
 		
 
-class xsection(xdiv):
+class XSection(XDiv):
 	
-	def __init__(self, title, text):
-		xdiv.__init__(self, "section")
-		par = xpar()
-		par.add(xh2(title))
-		par.add(xhr())
+	def __init__(self, parent, title, text):
+		XDiv.__init__(self, parent, "section")
+		p = XP(self)
+		XH2(p, title)
+		XHr(p)
 		if type(text) is str:
-			par.add(xfree(text))
+			XFree(p, text)
 		else:
 			par.add(text)
-		self.add(par)
-	
-		
-class xpage(xtag):
-	
-	class xpagetable(xtable):
-		
-		def __init__(self, title):
-			xtable.__init__(self, {"class":"page-outer-table"})
-
-			row = xrow()
-			row.add(xcell("&nbsp", {"class":"page-header-left"}))
-			row.add(xcell(xh1(title), {"class":"page-header-right"}))
-			self.tbody.add(row)
 			
-			self.sidebar = xdiv("sidebar")
-			self.content = xdiv("content")
-			
-			row = xrow()
-			row.add(xcell(self.sidebar, {"class" : "sidebar-cell"}))
-			row.add(xcell(self.content))
-			self.tbody.add(row)
+		
+class XPage(XTag):
+	
+	class XFrame(XTable):
+		
+		def __init__(self, parent, title):
+			XTable.__init__(self, parent, {"class":"page-outer-table"})
+			row = XTr(self)
+			c1 = XTd(row, {"class":"page-header-left"})
+			XFree(c1, "&nbsp")
+			c2 = XTd(row, {"class":"page-header-right"})
+			XH1(c2, title)
+			row = XTr(self)
+			c3 = XTd(row, {"class":"sidebar-cell"})
+			self.sidebar = XDiv(c3, "sidebar")
+			c4 = XTd(row)
+			self.content = XDiv(c4, "content")
 			
 	def __init__(self, title):
-		xtag.__init__(self, "html")
-
-		self.head = xhead()
-		self.add(self.head)
-
-		self.body = xbody()
-		self.add(self.body)
-
-		self.frame = xpage.xpagetable(title)
-		self.body.add(self.frame)
-	
-	def get_sidebar(self):
-		return self.frame.sidebar
-		
-	def get_content(self):
-		return self.frame.content
+		XTag.__init__(self, None, "html")
+		self.head = XHead(self)
+		self.body = XBody(self)
+		self.frame = XPage.XFrame(self.body, title)
 	
 	def add_content(self, node):
 		self.frame.content.add(node)
@@ -284,7 +331,7 @@ class xpage(xtag):
 	def begin_html(self):
 		html = []
 		html.append("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">""")
-		html.append(xtag.begin_html(self))
+		html.append(XTag.begin_html(self))
 		return "\r\n".join(html)
 	
 

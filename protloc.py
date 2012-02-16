@@ -1,60 +1,49 @@
 import pg
 import datetime
 import datamining
-import html
+from html import *
 
 import mamba.task
 
 
-class xsearchfield(html.xtag):
+class xsearchfield(XTag):
 	
-	def __init__(self, action="Search"):
-		html.xtag.__init__(self, "form")
+	def __init__(self, parent, action="Search"):
+		XTag.__init__(self, parent, "form")
 		self["action"] = action
 		self["method"] = "post"
 		
-		center = html.xtag("center")
-		par1 = html.xpar()
-		par1.add(html.xh3("Search for diseases, genes and identifiers"))
-		par1.add(html.xtag("input", {"type":"text", "name":"query", "size":"100%"}))
-		center.add(par1)
+		center = XTag(self, "center")
+		p1 = XP(center)
+		XH3(p1, "Search for diseases, genes and identifiers")
+		XTag(p1, "input", {"type":"text", "name":"query", "size":"100%", "value":"ENSP00000321537"})
 		
-		par2 = html.xpar()
-		radio1 = html.xtag("input", {"type":"radio", "name":"filter", "value":"any", "checked":"1"})
-		radio1.add("Any")
+		p2 = XP(center)
+		ra1 = XTag(p2, "input", {"type":"radio", "name":"filter", "value":"any", "checked":"1"})
+		XFree(ra1, "Any")
 		
-		radio2 = html.xtag("input", {"type":"radio", "name":"filter", "value":"disease"})
-		radio2.add("Diseases")
-		space2 = html.xfree("&nbsp;")
-		space2.add(radio2)
+		sp1 = XFree(p2, "&nbsp;")	
+		ra2 = XTag(sp1, "input", {"type":"radio", "name":"filter", "value":"disease"})
+		XFree(ra2, "Diseases")
 		
-		radio3 = html.xtag("input", {"type":"radio", "name":"filter", "value":"gene"})
-		radio3.add("Genes")
-		space3 = html.xfree("&nbsp;")
-		space3.add(radio3)
+		sp2 = XFree(p2, "&nbsp;")	
+		ra3 = XTag(sp2, "input", {"type":"radio", "name":"filter", "value":"gene"})
+		XFree(ra3, "Genes")
 		
-		submit = html.xtag("input", {"type":"submit", "value":"submit"})
-		par2.add(radio1)
-		par2.add(space2)
-		par2.add(space3)
-		par3 = html.xpar()
-		par3.add(submit)
-		par2.add(par3)
+		p3 = XP(p2)
+		submit = XTag(p3, "input", {"type":"submit", "value":"submit"})
 		
-		center.add(par2)
-		self.add(center)
 
-
-class HtmlBasePage(html.xpage):
+class HtmlBasePage(XPage):
 	
 	def __init__(self):
-		html.xpage.__init__(self, "<table><tr><td>Compendium of Liteature Listed</td></tr><tr><td>Disease Gene Associations (Collide&#0153;)</td></tr></table>")
-		self.get_sidebar().add(html.xpar(datetime.datetime.now().strftime('%a-%d-%b-%Y %H:%M:%S %Z')))
-		tbl = html.xtable({"width":"100%"})
-		tbl.addrow("&nbsp")
+		XPage.__init__(self, "<table><tr><td>Compendium of Liteature Listed</td></tr><tr><td>Disease Gene Associations (Collide&#0153;)</td></tr></table>")
+
+		XP(self.frame.sidebar, datetime.datetime.now().strftime('%a-%d-%b-%Y %H:%M:%S %Z'))
+		tbl = XTable(self.frame.sidebar, {"width":"100%"})
 		tbl.addrow("Disease",  "8,553")
 		tbl.addrow("Proteins", "2,714")
-		self.get_sidebar().add(tbl)
+		
 
 
 class HtmlSearchPage(HtmlBasePage):
@@ -62,27 +51,50 @@ class HtmlSearchPage(HtmlBasePage):
 	def __init__(self, rest):
 		HtmlBasePage.__init__(self)
 		if "filter" in rest and "query" in rest:
+			self.head.title = "Search result"
 			if filter == "any":
 				pass
 			elif filter == "disease":
 				pass
 			elif filter == "gene":
 				pass
-			self.add_content(html.xh2("Result for: %s" % rest["query"]))
-			tbl = html.xtable()
-			conn = pg.connect(host='localhost', user='ljj', dbname='knowledge')
-			q = conn.query("SELECT * FROM knowledge WHERE type1=9606 and id1='ENSP00000000233' AND type2=-23 LIMIT 30;")
+			XH1(self.frame.content, "Result for: '%s' (%s)" % (rest["query"], rest["filter"]))
+			
+			groups = XTable(self.frame.content)
+			group1 = XTd(XTr(groups))
+			group2 = XTd(XTr(groups))
+			group3 = XTd(XTr(groups))
+			
+			XH2(group1, "Text-mining:")
+			tbl0 = XDataTable(XBox(group1).content)
+			tbl0.addhead("Disease (DOID)", "Score")
+			
+			dictionary = pg.connect(host='localhost', user='ljj', dbname='dictionary')
+			#### TODO: Get preferred names from the dictionary database.
+			
+			knowledge = pg.connect(host='localhost', user='ljj', dbname='textmining')
+			q = knowledge.query("SELECT * FROM pairs WHERE type1=9606 and id1='%s' AND type2=-26 ORDER BY Score DESC LIMIT 30;" % rest["query"])
 			for x in q.getresult():
-				r = html.xrow()
-				r.add(x[0])
-				r.add(x[1])
-				r.add(x[3])
-				r.add('<a href="%s">%s</a>' % (x[-1], x[-1]))
-				tbl.addrow(r)
-			self.add_content(html.xshadowbox(tbl))
+				tbl0.addrow(x[3], x[4])
+			
+			XH2(group2, "Valid:")
+			tbl1 = XDataTable(XBox(group2).content)
+			tbl1.addhead("Disease ID", "Evidence", "Stars", "Source")
+			
+			XH2(group3, "Non-valid:")
+			tbl2 = XDataTable(XBox(group3).content)
+			tbl2.addhead("Disease ID", "Evidence", "Stars", "Source")
+			
+			knowledge = pg.connect(host='localhost', user='ljj', dbname='knowledge')
+			q = knowledge.query("SELECT * FROM knowledge WHERE type1=9606 and id1='%s' AND type2=-26 LIMIT 30;" % rest["query"])
+			for x in q.getresult():
+				if x[7] == 't':
+					tbl1.addrow(x[3], x[5], str(x[6]), '<a href="%s">%s</a>' % (x[8], x[4]))
+				else:
+					tbl2.addrow(x[3], x[5], str(x[6]), '<a href="%s">%s</a>' % (x[8], x[4]))
 		else:
 			self.head.title = "Search diseases and genes"
-			self.add_content(html.xshadowbox(xsearchfield()))
+			xsearchfield(self.frame.content)
 			
 
 class HtmlProteinPage(HtmlBasePage):
@@ -90,7 +102,8 @@ class HtmlProteinPage(HtmlBasePage):
 	def __init__(self, type, id):
 		HtmlBasePage.__init__(self)
 		self.head.title = "Protein %s" % id
-		self.add_content(html.xshadowbox(datamining.xtextmining(9606, "ENSP00000332369")))
+		box = XBox(self.frame.content)
+		datamining.xtextmining(box.content, 9606, "ENSP00000332369")
 
 
 class HtmlDiseasePage(HtmlBasePage):
@@ -98,8 +111,8 @@ class HtmlDiseasePage(HtmlBasePage):
 	def __init__(self, disease):
 		HtmlBasePage.__init__(self)
 		self.head.title = disease
-		self.add_content(html.xsection("Disease gene association", '<img src="figure2.png" width="250px"></img>Using an andvanced textmining pipeline against the full body of indexed medical literatur and a ontology-derived, ontology-self-curated dictionary consisting of proteins, disease, chemicals etc. we have created the worlds first resource linking genes to diseases on a scale never seen before.'))
-		self.add_content(html.xsection("Alzheimer's disease", "A dementia that results in progressive memory loss, impaired thinking, disorientation, and changes in personality and mood starting in late middle age and leads in advanced cases to a profound decline in cognitive and physical functioning and is marked histologically by the degeneration of brain neurons especially in the cerebral cortex and by the presence of neurofibrillary tangles and plaques containing beta-amyloid."))
+		self.add_content(XSection("Disease gene association", '<img src="figure2.png" width="250px"></img>Using an andvanced textmining pipeline against the full body of indexed medical literatur and a ontology-derived, ontology-self-curated dictionary consisting of proteins, disease, chemicals etc. we have created the worlds first resource linking genes to diseases on a scale never seen before.'))
+		self.add_content(XSection("Alzheimer's disease", "A dementia that results in progressive memory loss, impaired thinking, disorientation, and changes in personality and mood starting in late middle age and leads in advanced cases to a profound decline in cognitive and physical functioning and is marked histologically by the degeneration of brain neurons especially in the cerebral cortex and by the presence of neurofibrillary tangles and plaques containing beta-amyloid."))
 		self.add_content(datamining.xtextmining(9606, "ENSP00000335657"))
 
 

@@ -2,19 +2,14 @@
 /* Redmamba CSS style definitions.             */
 /* ------------------------------------------- */
 
-html {
+html, body {
 	margin: 0;
 	padding: 0;
 	height: 100%;
-	border: none
-}
-
-body {
-	font-family: Verdana, Tahoma, Arial, sans-serif;
+	width: 100%;
+	border: none;
+	font-family: Helvetica;
 	font-size: 12px;
-	margin: 0px;
-	height: 100%;
-	
 }
 
 hr {
@@ -30,65 +25,24 @@ tr td {
 
 /* ------------------------------------------- */
 
-.shadowbox-top-right {
-	/*width:70%;*/
-	float:left;
-	margin: 0;
-	padding: 0 !important;
-	background: url("boxshadow_tr.png") no-repeat right top;
-}
-
-.shadowbox-top-left {
-	margin:0;
-	padding: 0 !important;
-	background: url("boxshadow_tl.png") no-repeat left top;
-}
-
-.shadowbox-bottom-right {
-	margin:0;
-	padding: 0 !important;
-	background: url("boxshadow_br.png") no-repeat right bottom;
-}
-
-.shadowbox-bottom-left {
-	margin: 0;
-	padding: 0 !important;
-	background: url("boxshadow_bl.png") no-repeat left bottom;
-}
-
-
-.shadowbox-content {
-	margin:0;
-	padding:1.5em 3em 3em 2.5em;
-}
-
-.shadowbox-content p, .shadowbox-content h1 {
-	margin: 1em 1em 1em;
-	padding:0;
-	line-height:1.6;
-}
-
-/* ------------------------------------------- */
-
 .page-outer-table {
 	width: 100%;
+	height: 100%;
 	vertical-align: top;
 	border-spacing: 0;
 	table-layout: fixed;
-	height: 100%;
 }
 
 .page-header-left {
 	width: 130px;
 	color: LightBlue;
-	background: DodgerBlue;
+	background: #404040;
 	background: -webkit-gradient(linear, left top, right top, from(#404040), to(DarkGray));
 	background: -moz-linear-gradient(left, #404040, DarkGray);
 	border-bottom: Solid 1px Gray;
 }
 
 .page-header-right {
-	/*color: LightCyan;*/
 	color: White;
 	background: #DDDDDD;
 	background: -webkit-gradient(radial, 80% 40%, 0, 80% 40%, 200, from(#DDDDDD), to(DarkGray));
@@ -97,6 +51,9 @@ tr td {
 	text-shadow: DimGray 3px 3px 5px;
 	border-bottom: Solid 1px Gray;
 }
+
+
+/* ------------------------------------------- */
 
 .sidebar-cell {
 	width: 135px;
@@ -114,6 +71,8 @@ tr td {
 	margin: 12px;
 }
 
+/* ------------------------------------------- */
+
 .content {
 	display: inline-block;
 	height: 100%;
@@ -130,6 +89,49 @@ img {
 	float: left;
 	padding: 10px 10px 10px 10px;
 }
+
+
+/* ------------------------------------------- */
+
+.shadowbox-top-right {
+	float:left;
+	margin: 0;
+	padding: 0 !important;
+	background: url("boxshadow_tr.png") no-repeat right top;
+}
+
+.shadowbox-top-left {
+	margin:0;
+	padding: 0 !important;
+	background: url("boxshadow_tl.png") no-repeat left top;
+}
+
+.shadowbox-bottom-right {
+	margin: 0;
+	padding: 0 !important;
+	background: url("boxshadow_br.png") no-repeat right bottom;
+}
+
+.shadowbox-bottom-left {
+	margin: 0;
+	padding: 0 !important;
+	background: url("boxshadow_bl.png") no-repeat left bottom;
+}
+
+
+.shadowbox-content {
+	margin:0;
+	padding:1.5em 3em 3em 2.5em;
+}
+
+/*.shadowbox-content p, .shadowbox-content h1 {
+	/*margin: 1em 1em 1em;*/
+	padding:0;
+	/*line-height:1.6;*/
+}*/
+
+/* ------------------------------------------- */
+
 
 /* ------------------------------------------- */
 
@@ -183,3 +185,17 @@ img {
 
 /* ------------------------------------------- */
 
+.data {
+	font-family: monospace;
+	cellpadding: 0;
+	cellspacing: 0;
+}
+
+.data td {
+	text-align: left;
+	width: auto;
+}
+
+.data tr.odd{
+	background-color: #DDDDDD;
+}
