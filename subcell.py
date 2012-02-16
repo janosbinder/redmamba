@@ -22,9 +22,12 @@ class MockSubcell(mamba.task.Request):
 		content = page.frame.content
 		XSection(content, "Results from different subcellular localization methods", "Press refresh if you are not satisfied with the results. Then the monkeys will be shocked in the box and they will paint the squares with different green")
 		xsvg(content, "www/figures/overview_figure.svg", self.get_mock_different_methods(9606, 'fake'))
-		XSection(content, "Results from text mining", "Press refresh if you are not satisfied with the results. Then the boxes will be colored here using some random noise")
-		xsvg(content, "www/figures/subcell.svg", self.get_mock_subcell_loc(9606, 'fake'))
-		
+		XSection(content, "Results from text mining - plant", "Press refresh if you are not satisfied with the results. Then the boxes will be colored here using some random noise")
+		xsvg(content, "www/figures/subcell-plant.svg", self.get_mock_subcell_loc(9606, 'fake'))
+		XSection(content, "Results from text mining - animal", "Press refresh if you are not satisfied with the results. Then the boxes will be colored here using some random noise")
+                xsvg(content, "www/figures/subcell-animal.svg", self.get_mock_subcell_loc(9606, 'fake'))
+                XSection(content, "Results from text mining - fungus", "Press refresh if you are not satisfied with the results. Then the boxes will be colored here using some random noise")
+                xsvg(content, "www/figures/subcell-fungus.svg", self.get_mock_subcell_loc(9606, 'fake'))
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
 		
@@ -115,10 +118,7 @@ class svg_colorer:
 	def create_colored_html(filename, compartment_color_map):
 		buffer = [];
 		f = open(filename, 'r')
-		#tmp1 = tempfile.mktemp()
-		#tmp2 = tempfile.mktemp()
-		#os.system("convert -size 400x300 %s %s" % (tmp1, tmp2))
-		exp = svg_colorer.concatenate_list(compartment_color_map.keys(),'<\w* title="','".*>','|')
+		exp = svg_colorer.concatenate_list(compartment_color_map.keys(),'<.* title="','".*>','|')
 		for line in f:
 			if re.search("^ *<[?!]", line): #ignore XML header
 				continue
@@ -129,7 +129,7 @@ class svg_colorer:
 					match2 = re.search('title="'+key+'"',line)
 					if match2:
 						if value > 0:
-							buffer.append(re.sub('fill="#.{6}"', 'fill="%s"' % svg_colorer.define_color(value), line))
+							buffer.append(re.sub('(?<=fill:|ill=")#.{6}', '%s' % svg_colorer.define_color(value), line))
 						else:
 							buffer.append(line)
 			else:
