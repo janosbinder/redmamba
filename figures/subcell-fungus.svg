@@ -1,8 +1,15 @@
 <?xml version="1.0" standalone="yes"?>
 <svg version="1.1" height="768" width="1024" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" clip-path="url(#p.0)" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<!-- Make it like a potato, do not have so much place for cytoplasm, make cytoskeleton nicer -->
-<g transform="scale(0.5, 0.5)">
-<rect title="ex" fill="#ffffff" x="0" y="0" width="970" height="770" />
+<g transform="translate(-5,-20) scale(0.5, 0.5)">
+<defs>
+    <radialGradient id="grad1" cx="50%" cy="50%" r="48%" fx="50%" fy="50%">
+        <stop offset="0%" style="stop-color:#ffffff; stop-opacity:0" />
+        <stop offset="78%" style="stop-color:#ffffff; stop-opacity:0" />
+        <stop offset="100%" style="stop-color:#ffffff; stop-opacity:1" />
+    </radialGradient>
+</defs>    
+<rect title="ex" fill="#ffffff" x="5" y="50" width="830" height="630" />
+<rect title="ex-gradient-filter" fill="url(#grad1)" x="0" y="45" width="840" height="640" />
 <text title="ex-text" font-size="20" x="630" y="200" fill="black">Extracellular</text>
 <path title="cw" transform="translate(-8,-11) scale(1.02,1.03)" fill="#cccccc" stroke="#000000" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt" fill-rule="nonzero" d="M166.49251 554.92676C223.42393 594.56775 347.1889 583.96497 428.4232 586.73065C509.65744 589.49634 605.5177 593.6458 653.89813 571.5209C702.27856 549.39594 701.829 483.48145 718.7057 453.98083C735.58246 424.4802 748.633 418.7171 755.1585 394.51712C761.684 370.31714 767.30994 331.8283 757.8588 308.78094C748.4077 285.73358 719.3791 269.13898 698.4519 256.23294C677.52466 243.32693 666.94916 250.93481 632.2956 231.34482C597.642 211.7548 546.56177 153.90417 490.53046 138.69292C434.49915 123.48165 354.1645 130.16664 296.1077 140.07726C238.05089 149.98787 177.0685 163.35535 142.18967 198.15662C107.31082 232.95789 82.78417 289.42316 86.83465 348.88486C90.88512 408.34656 109.56108 515.2858 166.49251 554.92676Z" />
 <text title="cw-text" font-size="20" x="230" y="120" fill="black">Cell Wall</text>
