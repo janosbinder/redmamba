@@ -20,10 +20,10 @@ import math
 
 import html
 
-class xtextmining(html.xnode):
+class xtextmining(html.XNode):
 	
-	def __init__(self, type, id):
-		html.xnode.__init__(self)
+	def __init__(self, parent, type, id):
+		html.XNode.__init__(self, parent)
 		self.type = type
 		self.id = id
 		

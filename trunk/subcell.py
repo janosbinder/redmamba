@@ -4,7 +4,9 @@ import re
 import string
 import random
 import tempfile
-import html
+
+from html import *
+
 import mamba.setup
 import mamba.task
 import mamba.http
@@ -15,12 +17,14 @@ class MockSubcell(mamba.task.Request):
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		page = html.xpage("Localization, Localization, Localization")
-		page.get_content().add(html.xsection("Results from different subcellular localization methods", "Press refresh if you are not satisfied with the results. Then the monkeys will be shocked in the box and they will paint the squares with different green"))
-		page.get_content().add(xsvg("www/figures/overview_figure.svg", self.get_mock_different_methods(9606, 'fake')))
-		page.get_content().add(html.xsection("Results from text mining", "Press refresh if you are not satisfied with the results. Then the boxes will be colored here using some random noise"))
-		page.get_content().add(xsvg("www/figures/subcell.svg", self.get_mock_subcell_loc(9606, 'fake')))
-		#page.get_content().add(html.xfree('<img src="figures/figure.png">'))
+
+		page = XPage("Localization, Localization, Localization")
+		content = page.frame.content
+		XSection(content, "Results from different subcellular localization methods", "Press refresh if you are not satisfied with the results. Then the monkeys will be shocked in the box and they will paint the squares with different green")
+		xsvg(content, "www/figures/overview_figure.svg", self.get_mock_different_methods(9606, 'fake'))
+		XSection(content, "Results from text mining", "Press refresh if you are not satisfied with the results. Then the boxes will be colored here using some random noise")
+		xsvg(content, "www/figures/subcell.svg", self.get_mock_subcell_loc(9606, 'fake'))
+		
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
 		
@@ -57,9 +61,10 @@ class Subcell(mamba.task.Request):
 		id = 'ENSP00000269305'
 		
 		rest = mamba.task.RestDecoder(self)
-		page = html.xpage("Localization, Localization, Localization")
-		page.get_content().add(html.xsection("Results from text mining", "Here is some fact about p53"))
-		page.get_content().add(xsvg("www/figures/subcell.svg", self.get_localizations(type, id)))
+		page = XPage("Localization, Localization, Localization")
+		content = page.frame.content
+		XSection(content, "Results from text mining", "Here is some fact about p53")
+		xsvg(content, "www/figures/subcell.svg", self.get_localizations(type, id))
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
 		
@@ -79,9 +84,10 @@ class Subcell(mamba.task.Request):
 		
 		
 
-class xsvg(html.xnode):
-	def __init__(self, filename, compartment_color_map):
-		html.xnode.__init__(self)
+class xsvg(XNode):
+	
+	def __init__(self, parent, filename, compartment_color_map):
+		XNode.__init__(self, parent)
 		self.filename = filename
 		self.compartment_color_map = compartment_color_map
 		
