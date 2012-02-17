@@ -12,7 +12,7 @@
 <rect title="ex-gradient-filter" fill="url(#grad1)" x="0" y="0" width="960" height="760" />
 <g transform="translate(60, 0)">
 <text title="ex-text" font-size="20" x="660" y="90" fill="black">Extracellular</text>
-<ellipse title="cw" fill="#ffffff" stroke="#000000" stroke-width="2.0" cx="420" cy="370" rx="380" ry="290" />
+<ellipse title="cw" fill="#888888" stroke="#000000" stroke-width="2.0" cx="420" cy="370" rx="380" ry="290" />
 <text title="cw-text" font-size="20" x="130" y="120" fill="black">Cell Wall</text>
 <ellipse title="pm" fill="#ffffff" stroke="#000000" stroke-width="2.0" cx="420" cy="370" rx="365" ry="275" />
 <ellipse title="cy" fill="#ffffff" stroke="#000000" stroke-width="2.0" cx="420" cy="370" rx="350" ry="260" />
