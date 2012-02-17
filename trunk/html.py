@@ -258,6 +258,7 @@ class XHead(XTag):
 		if self.title:
 			html.append("  <title>%s</title>" % self.title)
 		html.append("""  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>""")
+		html.append("""  <meta http-equiv="X-UA-Compatible" content="IE=9"></meta>""")
 		for style in self.css:
 			html.append("""  <link rel="stylesheet" href="%s" type="text/css"></link>""" % style)
 		for java in self.scripts:
