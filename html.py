@@ -287,18 +287,26 @@ class XBox(XDiv):
 			self.content.add(content)
 		
 
+class XGroup(XDiv):
+	
+	def __init__(self, parent, title):
+		XDiv.__init__(self, parent, "group")
+		self.header = XDiv(self, "group_header")
+		XFree(self.header, title)
+		self.body = XDiv(self, "group_body")
+
 class XSection(XDiv):
 	
 	def __init__(self, parent, title, text):
 		XDiv.__init__(self, parent, "section")
-		p = XP(self)
-		XH2(p, title)
-		XHr(p)
+		self.header = XDiv(self, "section_header")
+		XFree(self.header, title)
+		self.body = XDiv(self, "section_body")
 		if type(text) is str:
-			XFree(p, text)
+			XFree(self.body, text)
 		else:
-			par.add(text)
-			
+			self.body.add(text)
+		
 		
 class XPage(XTag):
 	
