@@ -3,8 +3,47 @@ import datetime
 import datamining
 from html import *
 
+import mamba.setup
 import mamba.task
 
+
+class MyConfig(mamba.setup.Configuration):
+	
+	def __init__(self, ini_filename):
+		mamba.setup.Configuration.__init__(self, ini_filename)
+		serials = {}
+		for line in open("/home/purple1/dictionary/doid_entities.tsv"):
+			serial, entity_type, entity_identifier = line[:-1].split("\t")
+			serials[serial] = entity_identifier
+		
+		self.doid = {}
+		for line in open("/home/purple1/dictionary/doid_groups.tsv"):
+			child, parent = line[:-1].split("\t")
+			child  = serials[child]
+			parent = serials[parent]
+			if parent not in self.doid:
+				self.doid[parent] = set()
+			self.doid[parent].add(child)
+		
+		synonyms = {}	
+		for line in open("/home/purple1/dictionary/doid_names.tsv"):
+			serial, synonym, priority = line[:-1].split("\t")
+			identifier = serials[serial]
+			if identifier not in synonyms:
+				synonyms[identifier] = []
+			synonyms[identifier].append((int(priority), synonym))
+			
+		self.doid_names = {}
+		for identifier in synonyms:
+			names = synonyms[identifier]
+			names.sort()
+			self.doid_names[identifier] = map(lambda a: a[1], names)
+			
+		self.doid_text = {}
+		for line in open("/home/green1/frankild/ModernDiseaseDB/wikitext_doid_final.tsv"):
+			serial, identifier, text = line[:-1].split("\t")
+			self.doid_text[identifier] = text
+			
 
 class xsearchfield(XTag):
 	
@@ -34,11 +73,10 @@ class xsearchfield(XTag):
 		submit = XTag(p3, "input", {"type":"submit", "value":"submit"})
 		
 
-class HtmlBasePage(XPage):
+class HTMLPageCollide(XPage):
 	
 	def __init__(self):
 		XPage.__init__(self, "<table><tr><td>Compendium of Liteature Listed</td></tr><tr><td>Disease Gene Associations (Collide&#0153;)</td></tr></table>")
-
 		XP(self.frame.sidebar, datetime.datetime.now().strftime('%a-%d-%b-%Y %H:%M:%S %Z'))
 		tbl = XTable(self.frame.sidebar, {"width":"100%"})
 		tbl.addrow("Disease",  "8,553")
@@ -46,10 +84,43 @@ class HtmlBasePage(XPage):
 		
 
 
-class HtmlSearchPage(HtmlBasePage):
+class HTMLPageBrowseDisease(HTMLPageCollide):
 	
 	def __init__(self, rest):
-		HtmlBasePage.__init__(self)
+		HTMLPageCollide.__init__(self)
+		
+		if "doid" not in rest:
+			parent = "DOID:0000000"
+		else:
+			parent = rest["doid"].encode("utf8")
+			
+		config = mamba.setup.config()
+		group = XGroup(self.frame.content, "Browse the disease ontology")		
+		text = ""
+		if parent in config.doid_text:
+			text = config.doid_text[parent]
+		section = XSection(group.body, parent, text)
+		
+		ul = XTag(section.body, "ul")
+		for synonym in config.doid_names[parent]:
+			XFree(XTag(ul, "li"), synonym)
+		
+		tbl = XDataTable(section.body)
+		tbl["style"] = "margin-top: 50px;"
+		for child in config.doid[parent]:
+			text = ""
+			if child in config.doid_text:
+				text = config.doid_text[child]
+			link = '<a href="/Browse?doid=%s">%s</a>' % (child, child)
+			name = config.doid_names[child][0]
+			tbl.addrow(link, name, text)
+			
+
+
+class HTMLPageSearch(HTMLPageCollide):
+	
+	def __init__(self, rest):
+		HTMLPageCollide.__init__(self)
 		if "filter" in rest and "query" in rest:
 			self.head.title = "Search result"
 			if filter == "any":
@@ -97,23 +168,27 @@ class HtmlSearchPage(HtmlBasePage):
 			xsearchfield(self.frame.content)
 			
 
-class HtmlProteinPage(HtmlBasePage):
+class HTMLPageProtein(HTMLPageCollide):
 	
 	def __init__(self, type, id):
-		HtmlBasePage.__init__(self)
+		HTMLPageCollide.__init__(self)
 		self.head.title = "Protein %s" % id
 		box = XBox(self.frame.content)
 		datamining.xtextmining(box.content, 9606, "ENSP00000332369")
 
 
-class HtmlDiseasePage(HtmlBasePage):
+class HTMLPageDiseaseInfo(HTMLPageCollide):
 	
 	def __init__(self, disease):
-		HtmlBasePage.__init__(self)
-		self.head.title = disease
-		self.add_content(XSection("Disease gene association", '<img src="figure2.png" width="250px"></img>Using an andvanced textmining pipeline against the full body of indexed medical literatur and a ontology-derived, ontology-self-curated dictionary consisting of proteins, disease, chemicals etc. we have created the worlds first resource linking genes to diseases on a scale never seen before.'))
-		self.add_content(XSection("Alzheimer's disease", "A dementia that results in progressive memory loss, impaired thinking, disorientation, and changes in personality and mood starting in late middle age and leads in advanced cases to a profound decline in cognitive and physical functioning and is marked histologically by the degeneration of brain neurons especially in the cerebral cortex and by the presence of neurofibrillary tangles and plaques containing beta-amyloid."))
-		self.add_content(datamining.xtextmining(9606, "ENSP00000335657"))
+		HTMLPageCollide.__init__(self)
+		self.head.title = "Diseases"
+
+		group1 = XGroup(self.frame.content, "Diseases")
+		XSection(group1.body, "Disease gene associations", '<img src="figure2.png" width="250px"></img>Using an andvanced textmining pipeline against the full body of indexed medical literatur and a ontology-derived, ontology-self-curated dictionary consisting of proteins, disease, chemicals etc. we have created the worlds first resource linking genes to diseases on a scale never seen before.')
+		XSection(group1.body, "Alzheimer's disease", "A dementia that results in progressive memory loss, impaired thinking, disorientation, and changes in personality and mood starting in late middle age and leads in advanced cases to a profound decline in cognitive and physical functioning and is marked histologically by the degeneration of brain neurons especially in the cerebral cortex and by the presence of neurofibrillary tangles and plaques containing beta-amyloid.")
+		
+		group2 = XGroup(self.frame.content, "Text-mining")
+		datamining.xtextmining(group2.body, 9606, "ENSP00000332369")
 
 
 
@@ -124,7 +199,7 @@ class Search(mamba.task.Request):
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		page = HtmlSearchPage(rest)
+		page = HTMLPageSearch(rest)
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
 		
@@ -133,7 +208,7 @@ class Protein(mamba.task.Request):
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		page = HtmlProteinPage(rest["type"], rest["identifier"])
+		page = HTMLPageProtein(rest["type"], rest["identifier"])
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
 		
@@ -142,6 +217,15 @@ class Disease(mamba.task.Request):
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		page = HtmlDiseasePage(rest["disease"])
+		page = HTMLPageDiseaseInfo(rest["disease"])
+		reply = mamba.http.HTMLResponse(self, page.tohtml())
+		reply.send()
+
+
+class Browse(mamba.task.Request):
+	
+	def main(self):
+		rest = mamba.task.RestDecoder(self)
+		page = HTMLPageBrowseDisease(rest)
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()

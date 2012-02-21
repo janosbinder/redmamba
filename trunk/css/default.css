@@ -9,7 +9,7 @@ html, body {
 	width: 100%;
 	border: none;
 	font-family: Helvetica;
-	font-size: 12px;
+	font-size: 14px;
 }
 
 hr {
@@ -22,6 +22,57 @@ tr td {
 	vertical-align: top;
 }
 
+/* ------------------------------------------- */
+
+.group {
+	clear: both;
+	display: block;
+}
+
+.group_header {
+	display: block;
+	color: #8F8F8F;
+	font-size: 1.6em;
+	font-family: Helvetica;
+	font-weight: bolder;
+	line-height: 1.6em;
+	border-bottom: solid 2px #8F8F8F;
+}
+
+.group_body {
+	display: block;
+	margin-left: 20px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	padding-bottom: 20px;
+}
+
+/* ------------------------------------------- */
+
+.section {
+	clear: both;
+	display: block;
+	width: 510px;
+	margin-bottom: 30px;
+}
+
+.section_header {
+	display: block;
+	color: steelblue;/*#135081;*/
+	font-size: 1.25em;
+	font-family: Helvetica;
+	font-weight: bold;
+	line-height: 2em;
+	border-bottom: solid 2px steelblue;/*#135081;*/
+	padding-left: 10px;
+}
+
+.section_body {
+	display: block;
+	font-size: 1em;
+	font-family: 'Bookman Old Style', serif;
+	padding: 10px;
+}
 
 /* ------------------------------------------- */
 
@@ -52,7 +103,6 @@ tr td {
 	border-bottom: Solid 1px Gray;
 }
 
-
 /* ------------------------------------------- */
 
 .sidebar-cell {
@@ -78,11 +128,6 @@ tr td {
 	height: 100%;
 	margin-top: 5%;
 	margin-left: 8%;
-}
-
-.section {
-	padding: 10px 10px 10px 10px;
-	width: inherit;
 }
 
 img {
@@ -186,7 +231,6 @@ img {
 /* ------------------------------------------- */
 
 .data {
-	font-family: monospace;
 	cellpadding: 0;
 	cellspacing: 0;
 }
