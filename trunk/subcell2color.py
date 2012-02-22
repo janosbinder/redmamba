@@ -151,7 +151,7 @@ if __name__ == "__main__":
 		proteins = {}
 		for source in (know, pred, text):
 			for id1 in source:
-				if id not in proteins:
+				if id1 not in proteins:
 					proteins[id1] = {}
 		
 		for id1 in proteins:
@@ -159,7 +159,5 @@ if __name__ == "__main__":
 			color_labels(taxid, id1, subcell)
 			
 		break
-		
-		
 		
 	
