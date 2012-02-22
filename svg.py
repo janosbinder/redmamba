@@ -1,9 +1,6 @@
-import os
-import sys
 import re
 import string
 import random
-import tempfile
 
 from html import *
 
@@ -11,9 +8,10 @@ import mamba.setup
 import mamba.task
 import mamba.http
 import pg
-import math
 
 class MockSubcell(mamba.task.Request):
+	conn_info = ['localhost','5432','ljj','visualization']
+	table = "figures"
 	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
@@ -22,18 +20,18 @@ class MockSubcell(mamba.task.Request):
 
 		evidence = XGroup(page.frame.content, "Overview - Evidence channels")
 		XSection(evidence.body, "Results from different subcellular localization methods", "Press refresh if you are not satisfied with the results. Then the monkeys will be shocked in the box and they will paint the squares with different green")
-		xsvg(evidence.body, "www/figures/overview_figure.svg", self.get_mock_different_methods(9606, 'fake'))
+		xsvg(evidence.body, svg_colorer.get_figure_from_file("www/figures/overview_figure.svg"), self.get_mock_different_methods(9606, 'fake'))
 		
 		kingdoms = XGroup(page.frame.content, "Cell types - Kingdoms of life")
 
 		XSection(kingdoms.body, "Results from text mining - plant", "Press refresh if you are not satisfied with the results. Then the boxes will be colored here using some random noise")
-		xsvg(kingdoms.body, "www/figures/subcell-plant.svg", self.get_mock_subcell_loc(9606, 'fake'))
+		xsvg(kingdoms.body, svg_colorer.get_figure(self.conn_info,self.table,'cell_plants'), self.get_mock_subcell_loc(9606, 'fake'))
 
 		XSection(kingdoms.body, "Results from text mining - animal", "Press refresh if you are not satisfied with the results. Then the boxes will be colored here using some random noise")
-		xsvg(kingdoms.body, "www/figures/subcell-animal.svg", self.get_mock_subcell_loc(9606, 'fake'))
+		xsvg(kingdoms.body, svg_colorer.get_figure(self.conn_info,self.table,'cell_animals'), self.get_mock_subcell_loc(9606, 'fake'))
 		
 		XSection(kingdoms.body, "Results from text mining - fungus", "Press refresh if you are not satisfied with the results. Then the boxes will be colored here using some random noise")
-		xsvg(kingdoms.body, "www/figures/subcell-fungus.svg", self.get_mock_subcell_loc(9606, 'fake'))
+		xsvg(kingdoms.body, svg_colorer.get_figure(self.conn_info,self.table,'cell_fungi'), self.get_mock_subcell_loc(9606, 'fake'))
 
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
@@ -43,7 +41,7 @@ class MockSubcell(mamba.task.Request):
 		compartment_score_map = {}
 		random.seed()
 		for compartment in compartments:
-			compartment_score_map[compartment] = random.random()
+			compartment_score_map[compartment] = MockSubcell.define_color(random.random())
 		return compartment_score_map
 	
 	def get_mock_different_methods(self, type, id):
@@ -54,8 +52,12 @@ class MockSubcell(mamba.task.Request):
 		for method in methods:
 			for compartment in compartments:
 				entry = method + "-" + compartment
-				compartment_score_map[entry] = random.random()
+				compartment_score_map[entry] = MockSubcell.define_color(random.random())
 		return compartment_score_map
+	
+	@staticmethod
+	def define_color(w):
+		return "#%02x%02x%02x" % (255*(1-w), 255*(1-0.5*w), 255*(1-w))
 
 class Subcell(mamba.task.Request):
 	#TODO, make database connection work, make sure that it can accept passed parameters
@@ -96,20 +98,27 @@ class Subcell(mamba.task.Request):
 
 class xsvg(XNode):
 	
-	def __init__(self, parent, filename, compartment_color_map):
+	def __init__(self, parent, input_string, compartment_color_map):
 		XNode.__init__(self, parent)
-		self.filename = filename
+		self.input_string = input_string
 		self.compartment_color_map = compartment_color_map
 		
 	def begin_html(self):
-		return svg_colorer.create_colored_html(self.filename, self.compartment_color_map)
+		return svg_colorer.create_colored_html(self.input_string, self.compartment_color_map)
 
 class svg_colorer:
 	
 	@staticmethod
-	def define_color(w):
-		return "#%02x%02x%02x" % (255*(1-w), 255*(1-0.5*w), 255*(1-w))
-	
+	def get_figure(conn_info, table, figure):
+		conn_info = ['localhost','5432','ljj','visualization']
+		table = "figures"
+		#figure = "cell_animals"
+		database = pg.connect(host=conn_info[0], port=int(conn_info[1]), user=conn_info[2], passwd='', dbname=conn_info[3])
+		q  = database.query("SELECT svg FROM %s WHERE figure = '%s';" % (pg.escape_string(str(table)),pg.escape_string(str(figure)))).getresult()
+		if len(q) != 1:
+			raise Exception, "Error: No figure called %s from table %s has been returned" % figure, table
+		return q[0][0]
+		
 	@staticmethod
 	def concatenate_list(mylist, prefix, suffix, separator):
 		str_list = [];
@@ -122,25 +131,29 @@ class svg_colorer:
 		return string.join(str_list,'')
 
 	@staticmethod
-	def create_colored_html(filename, compartment_color_map):
-		buffer = [];
-		f = open(filename, 'r')
+	def create_colored_html(input_svg, compartment_color_map):	
+		buf = [];
 		exp = svg_colorer.concatenate_list(compartment_color_map.keys(),'<.* title="','".*>','|')
-		for line in f:
+		for line in input_svg.split("\n"):
 			if re.search("^ *<[?!]", line): #ignore XML header
 				continue
-			line = line[:-1]
 			match = re.search(exp, line)
 			if match:
 				for key, value in compartment_color_map.iteritems():
 					match2 = re.search('title="'+key+'"',line)
 					if match2:
-						if value > 0:
-							buffer.append(re.sub('(?<=fill:|ill=")#.{6}', '%s' % svg_colorer.define_color(value), line))
-						else:
-							buffer.append(line)
+						buf.append(re.sub('(?<=fill:|ill=")#.{6}', '%s' % value, line))
 			else:
-				buffer.append(line)
+				buf.append(line)
+		return string.join(buf,"\n")
+		
+	@staticmethod
+	def get_figure_from_file(filename):
+		f = open(filename, 'r')
+		buf = []
+		for line in f:
+			line = line[:-1]
+			buf.append(line)
 		f.close()
-		return string.join(buffer,"\n")
+		return string.join(buf,"\n")
 
