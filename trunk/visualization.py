@@ -2,11 +2,6 @@ import re
 import string
 import pg
 
-#database = pg.connect(host=self.conn_info[0], port=int(self.conn_info[1]), user=self.conn_info[2], passwd='', dbname=self.conn_info[3])
-#XNodeSomeType(str(visualization.SVG(database, 'cell_%', 9606, 'ENSP00000269305')))
-#XNodeSomeType(str(visualization.SVG(database, 'overview_%', 9606, 'ENSP00000269305')))
-#database.close()
-
 class SVG:
 	__svg = ""
 	
