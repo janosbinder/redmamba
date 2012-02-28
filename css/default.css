@@ -259,3 +259,11 @@ img {
 .data tr.even{
 	background-color: #EAEAEA;
 }
+
+.data tr.odd{
+	background-color: #FFFFFF;
+}
+
+.data .stars {
+	color: #3F3F3F;
+}
