@@ -1,7 +1,10 @@
 import pg
+import math
 import datetime
-import datamining
+
 from html import *
+import datapage
+import obo
 
 import mamba.setup
 import mamba.task
@@ -11,39 +14,87 @@ class MyConfig(mamba.setup.Configuration):
 	
 	def __init__(self, ini_filename):
 		mamba.setup.Configuration.__init__(self, ini_filename)
-		serials = {}
-		for line in open("/home/purple1/dictionary/doid_entities.tsv"):
-			serial, entity_type, entity_identifier = line[:-1].split("\t")
-			serials[serial] = entity_identifier
 		
-		self.doid = {}
-		for line in open("/home/purple1/dictionary/doid_groups.tsv"):
-			child, parent = line[:-1].split("\t")
-			child  = serials[child]
-			parent = serials[parent]
-			if parent not in self.doid:
-				self.doid[parent] = set()
-			self.doid[parent].add(child)
+		self.doid = obo.Ontology("/home/purple1/dictionary/doid.obo")
 		
-		synonyms = {}	
-		for line in open("/home/purple1/dictionary/doid_names.tsv"):
-			serial, synonym, priority = line[:-1].split("\t")
-			identifier = serials[serial]
-			if identifier not in synonyms:
-				synonyms[identifier] = []
-			synonyms[identifier].append((int(priority), synonym))
+		for id in self.doid.terms:
+			term = self.doid.terms[id]
+			term.wiki = None
+			term.gocc = {}
+			term.gomf = {}
+			term.gobp = {}
+			if term.definition == None:
+				term.definition = ""
+			term.wikitext = ""
 			
-		self.doid_names = {}
-		for identifier in synonyms:
-			names = synonyms[identifier]
-			names.sort()
-			self.doid_names[identifier] = map(lambda a: a[1], names)
-			
-		self.doid_text = {}
-		for line in open("/home/green1/frankild/ModernDiseaseDB/wikitext_doid_final.tsv"):
-			serial, identifier, text = line[:-1].split("\t")
-			self.doid_text[identifier] = text
-			
+		for line in open("/home/green1/frankild/ModernDiseaseDB/wikipedia/wikitext_doid_log.tsv"):
+			id, sentence, name, rname, wiki_url = line[:-1].split("\t")
+			if id in self.doid.terms:
+				term = self.doid.terms[id]
+				if wiki_url.startswith("http://en.wikipedia.org") and term.wiki == None:
+					term.wiki = wiki_url
+		
+		for line in open("/home/green1/frankild/ModernDiseaseDB/wikipedia/wikitext_doid_par.tsv"):
+			serial, id, text = line[:-1].split("\t")
+			if id in self.doid.terms:
+				self.doid.terms[id].wikitext = text
+				
+		
+		for line in open("/home/green1/frankild/ModernDiseaseDB/GO/gocc_pairs.tsv"):
+			type1, doid, type2, go, score = line[:-1].split("\t")
+			score = float(score)
+			if score > 2.4 and doid in self.doid.terms:
+				term = self.doid.terms[doid]
+				term.gocc[go] = score
+		
+		for id in self.doid.terms:
+			term = self.doid.terms[id]
+			term.gocc = sorted(map(lambda a: (a[1],a[0]), term.gocc.items()), reverse=True)
+		
+		for line in open("/home/green1/frankild/ModernDiseaseDB/GO/gomf_pairs.tsv"):
+			type1, doid, type2, go, score = line[:-1].split("\t")
+			score = float(score)
+			if score > 2.4 and doid in self.doid.terms:
+				term = self.doid.terms[doid]
+				term.gomf[go] = score
+		
+		for line in open("/home/green1/frankild/ModernDiseaseDB/GO/gobp_pairs.tsv"):
+			type1, doid, type2, go, score = line[:-1].split("\t")
+			score = float(score)
+			if score > 2.4 and doid in self.doid.terms:
+				term = self.doid.terms[doid]
+				term.gobp[go] = score
+		
+	
+
+class TalkDB:
+	
+	@staticmethod
+	def get_best_name(typex, idx, dictionary):
+		bestname = idx
+		names = dictionary.query("SELECT name FROM preferred WHERE type=%i AND id='%s';" % (typex, idx)).getresult()
+		if len(names):
+			bestname = names[0][0]
+		return bestname
+	
+	@staticmethod
+	def get_pairs(type1, id1, type2, textmining):
+		return textmining.query("SELECT * FROM pairs WHERE type1=%i AND id1='%s' AND type2=%i ORDER BY evidence DESC LIMIT 50;" % (type1, id1, type2))
+		
+	@staticmethod
+	def get_stars(score):
+		score = min(5, float(score))
+		stars = "".join(["&#9733;"]*int(score))
+		if round(score) - int(score) >= 0.5:
+			stars += "&#9734;"
+		if score >= 4:
+			stars = '<font color="green">%s</font>' % stars
+		elif score >= 3:
+			stars = '<font color="blue">%s</font>' % stars
+		else:
+			stars = '<font color="MidnightBlue">%s</font>' % stars
+		return stars
+	
 
 class xsearchfield(XTag):
 	
@@ -83,6 +134,33 @@ class HTMLPageCollide(XPage):
 		tbl.addrow("Proteins", "2,714")
 		
 
+class TextminingPairsTable(XDataTable):
+	
+	def __init__(self, parent, type1, id1, type2, textmining, dictionary):
+		XDataTable.__init__(self, parent)
+		self["width"] = "100%"
+		
+		if type2 > 0:
+			self.addhead("#", "Gene name", "Ensembl ID", "Z-score", "Evidence")
+		elif type2 == -1:
+			self.addhead("#", "Drug", "PubChem ID", "Z-score", "Evidence")
+		elif type2 <= -21 and type2 >= -24:
+			self.addhead("#", "Gene Ontology", "GO ID", "Z-score", "Evidence")
+		else:
+			self.addhead("#", "Name", str(type2), "Z-score", "Evidence")
+			
+		i = 1
+		for row in TalkDB.get_pairs(type1, id1, type2, textmining).getresult():
+			ty1, idx1, ty2, idx2, evidence, score = ensp = row
+			if score < 2.4:
+				break
+			bestname = TalkDB.get_best_name(ty2, idx2, dictionary)
+			ensembl = '<a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=%s" target="_blank">%s</a>' % (idx2, idx2)
+			row = self.addrow(i, "<strong>%s</strong>" % bestname, ensembl, "%.2f" % evidence, TalkDB.get_stars(score))
+			row.nodes[4]["fgcolor"] = "red"
+			i += 1
+		
+
 
 class HTMLPageBrowseDisease(HTMLPageCollide):
 	
@@ -90,31 +168,80 @@ class HTMLPageBrowseDisease(HTMLPageCollide):
 		HTMLPageCollide.__init__(self)
 		
 		if "doid" not in rest:
-			parent = "DOID:0000000"
+			id = "DOID:4"
 		else:
-			parent = rest["doid"].encode("utf8")
+			id = rest["doid"].encode("utf8")
 			
-		config = mamba.setup.config()
-		group = XGroup(self.frame.content, "Browse the disease ontology")		
-		text = ""
-		if parent in config.doid_text:
-			text = config.doid_text[parent]
-		section = XSection(group.body, parent, text)
+		term = mamba.setup.config().doid.terms[id]
 		
-		ul = XTag(section.body, "ul")
-		for synonym in config.doid_names[parent]:
-			XFree(XTag(ul, "li"), synonym)
+		title = '<a href="/Browse" style="link:inherit; text-decoration:none; visited:inherit;">Browse the disease ontology</a>'
+		group = XGroup(self.frame.content, title)
+		section = XSection(group.body, '%s &nbsp &nbsp; (%s)' % (term.name.capitalize(), term.id))
+
+		p1 = XP(section.body)
+		if len(term.definition):
+			XH3(p1, "Definition (DOID)")
+			XFree(p1, term.definition)
 		
-		tbl = XDataTable(section.body)
-		tbl["style"] = "margin-top: 50px;"
-		for child in config.doid[parent]:
-			text = ""
-			if child in config.doid_text:
-				text = config.doid_text[child]
-			link = '<a href="/Browse?doid=%s">%s</a>' % (child, child)
-			name = config.doid_names[child][0]
-			tbl.addrow(link, name, text)
+		if len(term.wikitext):
+			XH3(p1, "Description (Wikipedia)")
+			XFree(p1, term.wikitext)
+		
+		if term.wiki:
+			XFree(p1, '<br></br><a href="%s" target="wikipedia_tab">Wikipedia</a>' % term.wiki)
+		
+		p2 = XP(section.body)
+		XH3(p2, "Synonyms")
+		ul = XTag(p2, "ul")
+		for synonym in term.synonyms:
+			XFree(XTag(ul, "li"), synonym.capitalize())	
 			
+		if len(term.parents):
+			p3 = XP(section.body)
+			XH3(p3, "Derives from")
+			ul = XTag(p3, "ul")
+			for parent in term.parents:
+				XFree(ul, '<li><a href="/Browse?doid=%s">%s</a></li>' % (parent.id, parent.name.capitalize()))
+		
+		if len(term.children):
+			p5 = XP(section.body)
+			XH3(p5, "Relates to")
+			ul = XTag(p5, "ul")
+			for child in term.children:
+				XFree(ul, '<li><a href="/Browse?doid=%s">%s</a></li>' % (child.id, child.name.capitalize()))
+		
+		textmining = pg.connect(host='localhost', user='ljj', dbname='textmining')
+		dictionary = pg.connect(host='localhost', user='ljj', dbname='dictionary')
+		
+		XH3(section.body, "Literature")
+		datapage.XTextMiningResult(section.body, textmining, -26, term.id)
+		
+		XHr(section.body)
+			
+		p6 = XP(section.body)
+		XH3(p6, "Sub-cellular localization")
+		tbl = XDataTable(p6)
+		tbl["width"] = "100%"
+		tbl.addhead("#", "Term", "GO", "Z-score", "Evidence")
+		i = 1
+		for score, go in term.gocc:
+			if i > 10:
+				break
+			best   = TalkDB.get_best_name(-22, go, dictionary).capitalize()
+			golink = '<a href="http://www.ebi.ac.uk/QuickGO/GTerm?id=%s" target="gene_ontology_tab">%s</a>' % (go, go)
+			zscore = "%.2f" % score
+			stars  = TalkDB.get_stars(score)
+			row = tbl.addrow(i, "<strong>%s</strong>" % best, golink, zscore, stars)
+			i += 1
+		
+		p7 = XP(section.body)
+		XH3(p7, "Genes")
+		TextminingPairsTable(p7, -26, term.id, 9606, textmining, dictionary)
+			
+		XH3(p7, "Drugs and Compounds")
+		tbl = XDataTable(p7)
+		TextminingPairsTable(p7, -26, term.id, -1, textmining, dictionary)
+		
 
 
 class HTMLPageSearch(HTMLPageCollide):
@@ -174,7 +301,8 @@ class HTMLPageProtein(HTMLPageCollide):
 		HTMLPageCollide.__init__(self)
 		self.head.title = "Protein %s" % id
 		box = XBox(self.frame.content)
-		datamining.xtextmining(box.content, 9606, "ENSP00000332369")
+		textmining = pg.connect(host='localhost', user='ljj', dbname='textmining')
+		datapage.XTextMiningResult(box.content, textmining, 9606, "ENSP00000332369")
 
 
 class HTMLPageDiseaseInfo(HTMLPageCollide):
@@ -188,7 +316,8 @@ class HTMLPageDiseaseInfo(HTMLPageCollide):
 		XSection(group1.body, "Alzheimer's disease", "A dementia that results in progressive memory loss, impaired thinking, disorientation, and changes in personality and mood starting in late middle age and leads in advanced cases to a profound decline in cognitive and physical functioning and is marked histologically by the degeneration of brain neurons especially in the cerebral cortex and by the presence of neurofibrillary tangles and plaques containing beta-amyloid.")
 		
 		group2 = XGroup(self.frame.content, "Text-mining")
-		datamining.xtextmining(group2.body, 9606, "ENSP00000332369")
+		textmining = pg.connect(host='localhost', user='ljj', dbname='textmining')
+		datapage.XTextMiningResult(group2.body, textmining, 9606, "ENSP00000332369")
 
 
 

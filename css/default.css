@@ -52,18 +52,18 @@ tr td {
 .section {
 	clear: both;
 	display: block;
-	width: 510px;
+	width: 600px;
 	margin-bottom: 30px;
 }
 
 .section_header {
 	display: block;
-	color: steelblue;/*#135081;*/
+	color: #0547B0;/*steelblue;*//*#135081;*/
 	font-size: 1.25em;
 	font-family: Helvetica;
 	font-weight: bold;
 	line-height: 2em;
-	border-bottom: solid 2px steelblue;/*#135081;*/
+	border-bottom: solid 1px #0547B0;/*steelblue;*//*#135081;*/
 	padding-left: 10px;
 }
 
@@ -72,6 +72,10 @@ tr td {
 	font-size: 1em;
 	font-family: 'Bookman Old Style', serif;
 	padding: 10px;
+}
+
+.section_body h1, h2, h3 {
+	font-family: Helvetica;
 }
 
 /* ------------------------------------------- */
@@ -90,7 +94,7 @@ tr td {
 	background: #404040;
 	background: -webkit-gradient(linear, left top, right top, from(#404040), to(DarkGray));
 	background: -moz-linear-gradient(left, #404040, DarkGray);
-	border-bottom: Solid 1px Gray;
+	border-bottom: Solid 1px steelblue;/*Gray;*/
 }
 
 .page-header-right {
@@ -100,7 +104,7 @@ tr td {
 	background: -moz-linear-gradient(right,  #DDDDDD, DarkGray);
 	filter:     progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='DarkGray');
 	text-shadow: DimGray 3px 3px 5px;
-	border-bottom: Solid 1px Gray;
+	border-bottom: Solid 1px steelblue;/*Gray;*/
 }
 
 /* ------------------------------------------- */
@@ -108,7 +112,7 @@ tr td {
 .sidebar-cell {
 	width: 135px;
 	height: 100%;
-	border-right: Solid 1px Gray;
+	border-right: Solid 1px steelblue;
 	background: #E6E6E6;
 }
 
@@ -231,15 +235,27 @@ img {
 /* ------------------------------------------- */
 
 .data {
-	cellpadding: 0;
-	cellspacing: 0;
+	text-align: left;
+	font-size: 0.9em;
+	font-family: Helvetica;
 }
 
 .data td {
-	text-align: left;
 	width: auto;
+	vertical-align: middle;
 }
 
-.data tr.odd{
-	background-color: #DDDDDD;
+.data thead {
+	color: white;
+	background: #A4A4A4;
+}
+
+.data th {
+	text-align: left;
+	width: auto;
+	border-bottom: solid 2px black;
+}
+
+.data tr.even{
+	background-color: #EAEAEA;
 }
