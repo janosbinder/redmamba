@@ -3,8 +3,8 @@ import math
 import datetime
 
 from html import *
-import datapage
 import obo
+import textmining
 
 import mamba.setup
 import mamba.task
@@ -78,22 +78,9 @@ class TalkDB:
 		return bestname
 	
 	@staticmethod
-	def get_pairs(type1, id1, type2, textmining):
-		return textmining.query("SELECT * FROM pairs WHERE type1=%i AND id1='%s' AND type2=%i ORDER BY evidence DESC LIMIT 50;" % (type1, id1, type2))
-		
-	@staticmethod
 	def get_stars(score):
-		score = min(5, float(score))
-		stars = "".join(["&#9733;"]*int(score))
-		if round(score) - int(score) >= 0.5:
-			stars += "&#9734;"
-		if score >= 4:
-			stars = '<font color="green">%s</font>' % stars
-		elif score >= 3:
-			stars = '<font color="blue">%s</font>' % stars
-		else:
-			stars = '<font color="MidnightBlue">%s</font>' % stars
-		return stars
+		stars = int(min(5, float(score)))
+		return '<span class="stars">%s</span>' % "".join(["&#9733;"]*stars + ["&#9734;"]*(5-stars))
 	
 
 class xsearchfield(XTag):
@@ -134,33 +121,34 @@ class HTMLPageCollide(XPage):
 		tbl.addrow("Proteins", "2,714")
 		
 
-class TextminingPairsTable(XDataTable):
-	
-	def __init__(self, parent, type1, id1, type2, textmining, dictionary):
-		XDataTable.__init__(self, parent)
-		self["width"] = "100%"
-		
-		if type2 > 0:
-			self.addhead("#", "Gene name", "Ensembl ID", "Z-score", "Evidence")
-		elif type2 == -1:
-			self.addhead("#", "Drug", "PubChem ID", "Z-score", "Evidence")
-		elif type2 <= -21 and type2 >= -24:
-			self.addhead("#", "Gene Ontology", "GO ID", "Z-score", "Evidence")
-		else:
-			self.addhead("#", "Name", str(type2), "Z-score", "Evidence")
-			
-		i = 1
-		for row in TalkDB.get_pairs(type1, id1, type2, textmining).getresult():
-			ty1, idx1, ty2, idx2, evidence, score = ensp = row
-			if score < 2.4:
-				break
-			bestname = TalkDB.get_best_name(ty2, idx2, dictionary)
-			ensembl = '<a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=%s" target="_blank">%s</a>' % (idx2, idx2)
-			row = self.addrow(i, "<strong>%s</strong>" % bestname, ensembl, "%.2f" % evidence, TalkDB.get_stars(score))
-			row.nodes[4]["fgcolor"] = "red"
-			i += 1
-		
-
+#class TextminingPairsTable(XDataTable):
+#	
+#	def __init__(self, parent, type1, id1, type2, textmining, dictionary):
+#		XDataTable.__init__(self, parent)
+#		self["width"] = "100%"
+#		
+#		if type2 > 0:
+#			self.addhead("#", "Gene name", "Ensembl ID", "Z-score", "Evidence")
+#		elif type2 == -1:
+#			self.addhead("#", "Drug", "PubChem ID", "Z-score", "Evidence")
+#		elif type2 <= -21 and type2 >= -24:
+#			self.addhead("#", "Gene Ontology", "GO ID", "Z-score", "Evidence")
+#		else:
+#			self.addhead("#", "Name", str(type2), "Z-score", "Evidence")
+#			
+#		i = 1
+#		for row in TalkDB.get_pairs(type1, id1, type2, textmining).getresult():
+#			ty1, idx1, ty2, idx2, evidence, score = ensp = row
+#			if score < 2.4:
+#				break
+#			bestname = TalkDB.get_best_name(ty2, idx2, dictionary)
+#			ensembl = '<a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=%s" target="_blank">%s</a>' % (idx2, idx2)
+#			row = self.addrow(i, "<strong>%s</strong>" % bestname, ensembl, "%.2f" % evidence, TalkDB.get_stars(score))
+#			i += 1
+#		
+#	def __str__(self):
+#		return self.tohtml()
+#
 
 class HTMLPageBrowseDisease(HTMLPageCollide):
 	
@@ -210,11 +198,11 @@ class HTMLPageBrowseDisease(HTMLPageCollide):
 			for child in term.children:
 				XFree(ul, '<li><a href="/Browse?doid=%s">%s</a></li>' % (child.id, child.name.capitalize()))
 		
-		textmining = pg.connect(host='localhost', user='ljj', dbname='textmining')
-		dictionary = pg.connect(host='localhost', user='ljj', dbname='dictionary')
+		conn_text = pg.connect(host='localhost', user='ljj', dbname='textmining')
+		conn_dict = pg.connect(host='localhost', user='ljj', dbname='dictionary')
 		
 		XH3(section.body, "Literature")
-		datapage.XTextMiningResult(section.body, textmining, -26, term.id)
+		textmining.DocumentsHTML(section.body, conn_text, -26, term.id)
 		
 		XHr(section.body)
 			
@@ -227,7 +215,7 @@ class HTMLPageBrowseDisease(HTMLPageCollide):
 		for score, go in term.gocc:
 			if i > 10:
 				break
-			best   = TalkDB.get_best_name(-22, go, dictionary).capitalize()
+			best   = TalkDB.get_best_name(-22, go, conn_dict).capitalize()
 			golink = '<a href="http://www.ebi.ac.uk/QuickGO/GTerm?id=%s" target="gene_ontology_tab">%s</a>' % (go, go)
 			zscore = "%.2f" % score
 			stars  = TalkDB.get_stars(score)
@@ -236,11 +224,11 @@ class HTMLPageBrowseDisease(HTMLPageCollide):
 		
 		p7 = XP(section.body)
 		XH3(p7, "Genes")
-		TextminingPairsTable(p7, -26, term.id, 9606, textmining, dictionary)
+		textmining.PairsHTML(p7, -26, term.id, 9606, conn_text, conn_dict)
 			
 		XH3(p7, "Drugs and Compounds")
 		tbl = XDataTable(p7)
-		TextminingPairsTable(p7, -26, term.id, -1, textmining, dictionary)
+		textmining.PairsHTML(p7, -26, term.id, -1, conn_text, conn_dict)
 		
 
 

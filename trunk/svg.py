@@ -2,7 +2,7 @@ import re
 import pg
 
 from html import *
-import datapage
+import textmining
 import visualization
 
 import mamba.setup
@@ -34,7 +34,7 @@ class Subcell(mamba.task.Request):
 		conn.close()
 		
 		conn = pg.connect(host='localhost', port=5432, user='ljj', passwd='', dbname='textmining')
-		textmining = datapage.XTextMiningResult(page.frame.content, conn, qtype, qid)
+		textmining.DocumentsHTML(page.frame.content, conn, qtype, qid)
 		conn.close()
 
 		reply = mamba.http.HTMLResponse(self, page.tohtml())

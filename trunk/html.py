@@ -1,9 +1,3 @@
-import os
-import sys
-import types
-import datetime
-
-
 class XNode:
 	
 	def __init__(self, parent, attr={}):
@@ -120,6 +114,15 @@ class XFree(XTag):
 	
 	def end_html(self):
 		return ""
+	
+
+class XLink(XTag):
+	
+	def __init__(self, parent, href, text, target="_blanck"):
+		XTag.__init__(self, parent, "a")
+		self["href"] = href
+		self["target"] = target
+		XFree(self, text)
 
 class XHr(XTag):
 	
@@ -200,6 +203,8 @@ class XTable(XTag):
 		row = XTr(self.tbody)
 		if len(self.tbody.nodes) % 2 == 0:
 			row["class"] = "even"
+		else:
+			row["class"] = "odd"
 		for arg in args:
 			if issubclass(type(arg), XTd):
 				row.add(arg)
