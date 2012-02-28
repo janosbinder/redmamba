@@ -1,36 +1,42 @@
 import re
-import string
-import random
+import pg
 
 from html import *
-
+import datapage
 import visualization
+
 import mamba.setup
 import mamba.task
 import mamba.http
-import pg
 
 """ Subcell (should be renamed later) mamba plugin creates a webpage using visualization database.
     It is assumed that in the database figures and also color entries identified by id, type are stored
 	The color entries contain label->color pairs for the figures
 """
 class Subcell(mamba.task.Request):
-	conn_info = ['localhost','5432','ljj','visualization']
-	table = "figures"
-	database = None
-	
-	def main(self):
-		# these variables should be passed as parameters		
-		qtype = 9606
-		qid = 'ENSP00000269305'
 		
+	def main(self):
 		rest = mamba.task.RestDecoder(self)
-		page = XPage("Localization, Localization, Localization")
-		content = page.frame.content
-		XSection(content, "Results from text mining", "Here is some fact about p53")
-		self.database = pg.connect(host=self.conn_info[0], port=int(self.conn_info[1]), user=self.conn_info[2], passwd='', dbname=self.conn_info[3])		
-		XSVG(content, str(visualization.SVG(self.database, 'cell_%', qtype, qid)))
-		self.database.close()
+		
+		qtype = 9606
+		qid = "ENSP00000269305"
+		
+		if "entity_type" in rest:
+			qtype = int(rest["entity_type"])
+		if "entity_identifier" in rest:
+			qid = rest["entity_identifier"]
+
+		page = XPage("Sub-cellular Protein Localization (ProLoc)")
+		XSection(page.frame.content, "Results from text mining", "Here is some fact about p53")
+		
+		conn = pg.connect(host='localhost', port=5432, user='ljj', passwd='', dbname='visualization')
+		XSVG(page.frame.content, str(visualization.SVG(conn, 'cell_%', qtype, qid)))
+		conn.close()
+		
+		conn = pg.connect(host='localhost', port=5432, user='ljj', passwd='', dbname='textmining')
+		textmining = datapage.XTextMiningResult(page.frame.content, conn, qtype, qid)
+		conn.close()
+
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
 

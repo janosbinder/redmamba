@@ -1,23 +1,8 @@
 #!/usr/bin/env python
 
-try:
-	import pg
-except ImportError:
-	try:
-		import psycopg2 as pg
-		print " ******* WARNING!!!!!! Could not import the Postgres module 'pg' so imported psycop2 as pg instead! *******"
-	except ImportError:
-		pass
-	
-import types
-import xml.sax.saxutils as saxutils
+import pg
 import xml.etree.ElementTree as etree
-import time, datetime
-from datetime import date
-from time import gmtime, strftime, strptime
-from operator import itemgetter
-import math
-
+import datetime
 import html
 
 class xtextmining(html.XNode):

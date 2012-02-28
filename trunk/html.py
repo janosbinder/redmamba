@@ -9,10 +9,6 @@ class XNode:
 	def __init__(self, parent, attr={}):
 		self.parent = None
 		if parent != None:
-			#if not isinstance(type, types.ClassType):
-			#	raise Exception, "XNode.__init__() failed because 'parent' is not a class but %s" % type(parent)
-			#if not isinstance(parent, XNode):
-			#	raise Exception, "XNode.__init__() failed because 'parent' is not an XNode but %s" % parent
 			parent.add(self)
 		self.attr = {}
 		for name in attr:
@@ -176,6 +172,13 @@ class XTd(XTag):
 	
 	def __init__(self, parent, attr={}):
 		XTag.__init__(self, parent, "td", attr)
+
+
+class XTh(XTd):
+	
+	def __init__(self, parent, attr={}):
+		XTag.__init__(self, parent, "th", attr)
+
 	
 class XTr(XTag):
 	
@@ -183,64 +186,52 @@ class XTr(XTag):
 		if isinstance(parent, XTable):
 			parent = parent.tbody
 		XTag.__init__(self, parent, "tr", attr)
-
-	
-class XCaption(XTag):
-	
-	def __init__(self, parent, text=None, attr={}):
-		XTag.__init__(self, parent, "caption", attr)
-		self.text = text
-		
-	def begin_html(self):
-		if self.text:
-			return XTag.begin_html(self)
-			
-	def end_html(self):
-		if self.text:
-			return XTag.end_html(self)
 		
 
 class XTable(XTag):
 	
 	def __init__(self, parent, attr={}):
 		XTag.__init__(self, parent, "table", attr)
-		#self.caption = XCaption(self, "caption")
 		self.thead   = XOuterTag(self, "thead")
 		self.tfoot   = XOuterTag(self, "tfoot")
 		self.tbody   = XOuterTag(self, "tbody")
 		
-	def _new_row(self):
-		return XTr(self.tbody)
-		
 	def addrow(self, *args):
-		row = self._new_row()
+		row = XTr(self.tbody)
+		if len(self.tbody.nodes) % 2 == 0:
+			row["class"] = "even"
 		for arg in args:
-			if not isinstance(arg, XNode):
-				XFree(XTd(row), str(arg))
+			if issubclass(type(arg), XTd):
+				row.add(arg)
+			elif issubclass(type(arg), XNode):
+				XTr(row, arg)
 			else:
-				row.add(str(arg))
+				XFree(XTd(row), str(arg))
+		return row
 				
 	def addhead(self, *args):
 		row = XTr(self.thead)
-		row["style"] = "font-family: helvetica; font-weight: bold;"
 		for arg in args:
-			if not isinstance(arg, XNode):
-				XFree(XTd(row), str(arg))
+			if issubclass(type(arg), XTd):
+				row.add(arg)
+			elif issubclass(type(arg), XNode):
+				XTh(row, arg)
 			else:
-				row.add(str(arg))
-			
-				
+				XFree(XTh(row), str(arg))
+		return row
 				
 class XDataTable(XTable):
 	
 	def __init__(self, parent):
 		XTable.__init__(self, parent)
 		self["class"] = "data"
+		self["cellpadding"] = "1"
+		self["cellspacing"] = "0"
 		
 	def _new_row(self):
 		row = XTable._new_row(self)
-		if len(self.tbody.nodes) % 2 == 1:
-			row["class"] = "odd"
+		if len(self.tbody.nodes) % 2 == 0:
+			row["class"] = "even"
 		return row
 	
 
@@ -297,15 +288,16 @@ class XGroup(XDiv):
 
 class XSection(XDiv):
 	
-	def __init__(self, parent, title, text):
+	def __init__(self, parent, title, text=None):
 		XDiv.__init__(self, parent, "section")
 		self.header = XDiv(self, "section_header")
 		XFree(self.header, title)
 		self.body = XDiv(self, "section_body")
-		if type(text) is str:
-			XFree(self.body, text)
-		else:
-			self.body.add(text)
+		if text != None:
+			if type(text) is str:
+				XFree(self.body, text)
+			else:
+				self.body.add(text)
 		
 		
 class XPage(XTag):
