@@ -23,71 +23,57 @@
     <text x="196.9816" y="333.92383" id="text24" style="font-size:12px;fill:#000000" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)">Extracellular</text>
     <text x="214.54395" y="351.48618" id="text26" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:12px;fill:#000000">Mitochondrion</text>
     <text x="233.45476" y="367.37454" id="text28" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:12px;fill:#000000">Chloroplast</text>
-    <text x="10" y="115" fill="black" id="text30">UniprotKB</text>
-    <rect title="uniprotkb-subcell_nu" x="120" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect32" />
-    <rect title="uniprotkb-subcell_cy" x="145" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect34" />
-    <rect title="uniprotkb-subcell_cs" x="170" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect36" />
-    <rect title="uniprotkb-subcell_pe" x="195" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect38" />
-    <rect title="uniprotkb-subcell_ly" x="220" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect40" />
-    <rect title="uniprotkb-subcell_er" x="245" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect42" />
-    <rect title="uniprotkb-subcell_go" x="270" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect44" />
-    <rect title="uniprotkb-subcell_pm" x="295" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect46" />
-    <rect title="uniprotkb-subcell_en" x="320" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect48" />
-    <rect title="uniprotkb-subcell_va" x="345" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect50" />
-    <rect title="uniprotkb-subcell_ex" x="370" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect52" />
-    <rect title="uniprotkb-subcell_mi" x="395" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect54" />
-    <rect title="uniprotkb-subcell_ch" x="420" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect56" />
-    <text x="10" y="140" fill="black" id="text58">Gene Ontology</text>
-    <rect title="goa_nu" x="120" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect60" />
-    <rect title="goa_cy" x="145" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect62" />
-    <rect title="goa_cs" x="170" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect64" />
-    <rect title="goa_pe" x="195" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect66" />
-    <rect title="goa_ly" x="220" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect68" />
-    <rect title="goa_er" x="245" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect70" />
-    <rect title="goa_go" x="270" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect72" />
-    <rect title="goa_pm" x="295" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect74" />
-    <rect title="goa_en" x="320" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect76" />
-    <rect title="goa_va" x="345" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect78" />
-    <rect title="goa_ex" x="370" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect80" />
-    <rect title="goa_mi" x="395" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect82" />
-    <rect title="goa_ch" x="420" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect84" />
-    <text x="10" y="165" fill="black" id="text86">Text Mining</text>
-    <rect title="text_mining_nu" x="120" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect88" />
-    <rect title="text_mining_cy" x="145" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect90" />
-    <rect title="text_mining_cs" x="170" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect92" />
-    <rect title="text_mining_pe" x="195" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect94" />
-    <rect title="text_mining_ly" x="220" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect96" />
-    <rect title="text_mining_er" x="245" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect98" />
-    <rect title="text_mining_go" x="270" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect100" />
-    <rect title="text_mining_pm" x="295" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect102" />
-    <rect title="text_mining_en" x="320" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect104" />
-    <rect title="text_mining_va" x="345" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect106" />
-    <rect title="text_mining_ex" x="370" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect108" />
-    <rect title="text_mining_mi" x="395" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect110" />
-    <rect title="text_mining_ch" x="420" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect112" />
-    <text x="10" y="190" fill="black" id="text114">PSORT</text>
-    <rect title="psort_nu" x="120" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect116" />
-    <rect title="psort_cy" x="145" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect118" />
-    <rect title="psort_cs" x="170" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect120" />
-    <rect title="psort_pe" x="195" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect122" />
-    <rect title="psort_ly" x="220" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect124" />
-    <rect title="psort_er" x="245" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect126" />
-    <rect title="psort_go" x="270" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect128" />
-    <rect title="psort_pm" x="295" y="175" width="45" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect130" />
-    <rect title="psort_va" x="345" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect132" />
-    <rect title="psort_ex" x="370" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect134" />
-    <rect title="psort_mi" x="395" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect136" />
-    <rect title="psort_ch" x="420" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect138" />
-    <text x="10" y="215" fill="black" id="text140">YLoc</text>
-    <rect title="yloc_nu" x="120" y="200" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect142" />
-    <rect title="yloc_cy" x="145" y="200" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect144" />
-    <rect title="yloc_pe" x="195" y="200" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect146" />
-    <rect title="yloc_ly" x="220" y="200" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect148" />
-    <rect title="yloc_er" x="245" y="200" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect150" />
-    <rect title="yloc_go" x="270" y="200" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect152" />
-    <rect title="yloc_pm" x="295" y="200" width="45" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect154" />
-    <rect title="yloc_va" x="345" y="200" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect156" />
-    <rect title="yloc_ex" x="370" y="200" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect158" />
-    <rect title="yloc_mi" x="395" y="200" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect160" />
-    <rect title="yloc_ch" x="420" y="200" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect162" />
+    <text x="10" y="115" fill="black" id="text28">Knowledge</text>
+    <rect title="knowledge_nu" x="120" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect30" />
+    <rect title="knowledge_cy" x="145" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect32" />
+    <rect title="knowledge_cs" x="170" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect34" />
+    <rect title="knowledge_pe" x="195" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect36" />
+    <rect title="knowledge_ly" x="220" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect38" />
+    <rect title="knowledge_er" x="245" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect40" />
+    <rect title="knowledge_go" x="270" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect42" />
+    <rect title="knowledge_pm" x="295" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect44" />
+    <rect title="knowledge_en" x="320" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect46" />
+    <rect title="knowledge_va" x="345" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect48" />
+    <rect title="knowledge_ex" x="370" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect50" />
+    <rect title="knowledge_mi" x="395" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect52" />
+	<rect title="knowledge_ch" x="420" y="100" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect56" />
+    <text x="10" y="140" fill="black" id="text80">Text Mining</text>
+    <rect title="text_mining_nu" x="120" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect82" />
+    <rect title="text_mining_cy" x="145" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect84" />
+    <rect title="text_mining_cs" x="170" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect86" />
+    <rect title="text_mining_pe" x="195" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect88" />
+    <rect title="text_mining_ly" x="220" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect90" />
+    <rect title="text_mining_er" x="245" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect92" />
+    <rect title="text_mining_go" x="270" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect94" />
+    <rect title="text_mining_pm" x="295" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect96" />
+    <rect title="text_mining_en" x="320" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect98" />
+    <rect title="text_mining_va" x="345" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect100" />
+    <rect title="text_mining_ex" x="370" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect102" />
+    <rect title="text_mining_mi" x="395" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect104" />
+	<rect title="text_mining_ch" x="420" y="125" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect106" />
+    <text x="10" y="165" fill="black" id="text106">PSORT</text>
+    <rect title="psort_nu" x="120" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect108" />
+    <rect title="psort_cy" x="145" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect110" />
+    <rect title="psort_cs" x="170" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect112" />
+    <rect title="psort_pe" x="195" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect114" />
+    <rect title="psort_ly" x="220" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect116" />
+    <rect title="psort_er" x="245" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect118" />
+    <rect title="psort_go" x="270" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect120" />
+    <rect title="psort_pm" x="295" y="150" width="45" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect122" />
+    <rect title="psort_va" x="345" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect124" />
+    <rect title="psort_ex" x="370" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect126" />
+    <rect title="psort_mi" x="395" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect128" />
+    <rect title="psort_ch" x="420" y="150" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect130" />	
+    <text x="10" y="190" fill="black" id="text130">YLoc</text>
+    <rect title="yloc_nu" x="120" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect132" />
+    <rect title="yloc_cy" x="145" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect134" />
+    <rect title="yloc_pe" x="195" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect136" />
+    <rect title="yloc_ly" x="220" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect138" />
+    <rect title="yloc_er" x="245" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect140" />
+    <rect title="yloc_go" x="270" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect142" />
+    <rect title="yloc_pm" x="295" y="175" width="45" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect144" />
+    <rect title="yloc_va" x="345" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect146" />
+    <rect title="yloc_ex" x="370" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect148" />
+    <rect title="yloc_mi" x="395" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect150" />
+    <rect title="yloc_ch" x="420" y="175" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect152" />
 </svg>
