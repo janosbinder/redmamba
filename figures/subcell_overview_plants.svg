@@ -15,7 +15,7 @@
     <text x="57.020126" y="193.28853" id="text8" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:12px;fill:#000000">Citoskeleton</text>
     <text x="72.837265" y="209.7795" id="text10" style="font-size:12px;fill:#000000" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)">Peroxisome</text>
     <text x="90.572533" y="227.51477" id="text12" style="font-size:12px;fill:#000000" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)">Lysosome</text>
-    <text x="108.33944" y="245.28168" id="text14" style="font-size:12px;fill:#000000" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)">ER</text>
+    <text x="108.33944" y="245.28168" id="text14" style="font-size:12px;fill:#000000" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)">Endoplasmic Reticulum</text>
     <text x="125.47372" y="261.74213" id="text16" style="font-size:12px;fill:#000000" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)">Golgi apparatus</text>
     <text x="143.13432" y="280.07657" id="text18" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:12px;fill:#000000">Plasma membrane</text>
     <text x="161.6528" y="298.59506" id="text20" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:12px;fill:#000000">Endosome</text>
