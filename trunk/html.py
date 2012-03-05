@@ -1,3 +1,7 @@
+
+def string2bytes(text):
+	return unicode(text, "utf8", "replace").encode("utf8")
+
 class XNode:
 	
 	def __init__(self, parent, attr={}):
@@ -118,8 +122,8 @@ class XFree(XTag):
 
 class XLink(XTag):
 	
-	def __init__(self, parent, href, text, target="_blanck"):
-		XTag.__init__(self, parent, "a")
+	def __init__(self, parent, href, text, target="_blank", attr={}):
+		XTag.__init__(self, parent, "a", attr)
 		self["href"] = href
 		self["target"] = target
 		XFree(self, text)
@@ -143,12 +147,17 @@ class XP(XTag):
 	
 class XDiv(XTag):
 	
-	def __init__(self, parent, class_attributes=None, id_attributes=None):
+	def __init__(self, parent, div_class=None, div_id=None):
 		XTag.__init__(self, parent, "div")
-		if class_attributes:
-			self["class"] = class_attributes
-		if id_attributes:
-			self["id"] = id_attributes
+		if div_class:
+			self["class"] = div_class
+		if div_id:
+			self["id"] = div_id
+			
+class XSpan(XTag):
+	
+	def __init__(self, parent, attr={}):
+		XTag.__init__(self, parent, "span", attr)
 		
 	
 class XH1(XTag):
@@ -165,6 +174,13 @@ class XH2(XTag):
 
 
 class XH3(XTag):
+	
+	def __init__(self, parent, heading):
+		XTag.__init__(self, parent, "h3")
+		XFree(self, heading)
+
+
+class XH4(XTag):
 	
 	def __init__(self, parent, heading):
 		XTag.__init__(self, parent, "h3")
@@ -246,7 +262,8 @@ class XHead(XTag):
 		XTag.__init__(self, parent, "head")
 		self.title   = ""
 		self.css     = ["css/default.css"]
-		self.scripts = ["scripts/default.js"]
+		self.scripts = ["scripts/default.js",
+						"https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"]
 		
 	def begin_html(self):
 		html = []
@@ -288,7 +305,7 @@ class XGroup(XDiv):
 	def __init__(self, parent, title):
 		XDiv.__init__(self, parent, "group")
 		self.header = XDiv(self, "group_header")
-		XFree(self.header, title)
+		XH2(self.header, title)
 		self.body = XDiv(self, "group_body")
 
 class XSection(XDiv):
@@ -296,7 +313,7 @@ class XSection(XDiv):
 	def __init__(self, parent, title, text=None):
 		XDiv.__init__(self, parent, "section")
 		self.header = XDiv(self, "section_header")
-		XFree(self.header, title)
+		XH3(self.header, title)
 		self.body = XDiv(self, "section_body")
 		if text != None:
 			if type(text) is str:

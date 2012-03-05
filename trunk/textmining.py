@@ -2,7 +2,6 @@
 
 import html
 import datetime
-import xml.etree.ElementTree as etree
 
 
 class PairsHTML(html.XDataTable):
@@ -50,89 +49,64 @@ class PairsHTML(html.XDataTable):
 
 class DocumentsHTML(html.XNode):
 	
-	def __init__(self, parent, database, type, id):
+	def __init__(self, parent, database, qtype, qid):
 		html.XNode.__init__(self, parent)
-		self.database = database
-		self.type = type
-		self.id   = id
 		
-	def begin_html(self):
-		articles = {}
-		cmd = "SELECT document FROM matches WHERE type=%i AND id='%s' ORDER BY document DESC LIMIT 5;" % (self.type, self.id)
+		self.database = database
+		self.qtype = qtype
+		self.qid   = qid
+		
+		cmd = "SELECT DISTINCT document FROM matches WHERE type=%i AND id='%s' ORDER BY document DESC LIMIT 10;" % (self.qtype, self.qid)
+		n = 0
 		for pmid in self.database.query(cmd).getresult():
 			PMID = str(pmid[0])
 			document = self.database.query("SELECT * FROM documents WHERE document=%i;" % pmid).dictresult()[0]
-			doc_text = document['text'].split('\t', 1)
-			data = {}
-			data['journal'] = document['publication']
-			data['authors'] = document['authors'].split(',')
-			data['year']  = document['year']
-			data['title'] = unicode(doc_text[0], 'utf-8')
+			doc_text = html.string2bytes(document["text"]).split("\t", 1)
+			title    = doc_text[0]
 			if len(doc_text) > 1 :
-				data['abstract'] = doc_text[1]
+				abstract = doc_text[1]
 			else :
-				data['abstract'] = ''
-			articles[PMID] = data
-
-		root = etree.Element('Response')
-		articlehtml = etree.SubElement(root, 'ArticleHTML')    
-		
-		tagname = "ArticleHTML"
-		articlehtml = etree.Element(tagname)
-		
-		date_sorting = {}
-		journal_sorting = {}
-		title_sorting = {}
-		ranked_sorting = []
-		
-		t_start = datetime.datetime.now()
-		for PMID in articles:
-			document = articles[PMID]
-			article_wrapper = etree.SubElement(articlehtml,'div', {'class': 'article_wrapper', 'id': PMID})
-			title_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_title'})
-			title_wrapper.text = document['title']
+				abstract = ""
+			journal  = html.string2bytes(document["publication"])
+			authors  = html.string2bytes(document["authors"]).split(",")
+			year     = html.string2bytes(document["year"])
 			
-			author_wrapper = etree.SubElement(article_wrapper, 'span', {'class': 'article_authors'})
-			for idx, el_author in enumerate(document['authors'][:3]):
-				a = etree.SubElement(author_wrapper, 'a', {'href': 'http://www.ncbi.nlm.nih.gov/pubmed?term={0}[author]'.format(el_author), 'target': '_blank'})
-				a.text = unicode(el_author, 'utf-8')
-				if idx == 2 :
-					a.text += " ..."
+			n += 1
+			article_wrapper = html.XDiv(self, "article_wrapper", PMID)
+			if n % 2 == 0:
+				article_wrapper["style"] = "border: solid 2px #CCCCAA; background: #EEEEDD;"
+			
+			title_wrapper = html.XDiv(article_wrapper, "article_title")
+			html.XFree(title_wrapper, title)
+			author_wrapper = html.XSpan(article_wrapper, {"class": "article_authors"})
+			for idx, el_author in enumerate(authors[:3]):
+				text = el_author
+				if idx == 2:
+					text += " ..."
+				addr = "http://www.ncbi.nlm.nih.gov/pubmed?term=%s[author]" % el_author
+				a = html.XLink(author_wrapper, addr, text)
+				a["style"] = "text-decoration: none"
 					
-			journal_wrapper = etree.SubElement(author_wrapper, 'span', {'class': 'article_journal'})
-			journal = document['journal']
-			link = 'http://www.ncbi.nlm.nih.gov/pubmed?term={0}[journal]'.format(journal.split('.')[0])
-			a = etree.SubElement(journal_wrapper, 'a', {'href': link, 'target': '_blank'})
-			a.text = journal
-			label_year = etree.SubElement(journal_wrapper, 'label', {'class': 'article_year'})
-			label_year.text = "(" + document['year'] + ')'
+			journal_wrapper = html.XSpan(author_wrapper, {'class': 'article_journal'})
+			a = html.XLink(journal_wrapper, "http://www.ncbi.nlm.nih.gov/pubmed?term=%s[journal]" % journal.split(".")[0], journal)
+			a["style"] = "text-decoration: none"
+			label = html.XTag(journal_wrapper, "label", {'class': 'article_year'})
+			html.XFree(label, "(%s)" % year)
 			
-			doc = document['abstract']
-			if len(doc) == 0:
-				abstract_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract abstract_expand'})
-				abstract_wrapper.text = "[No abstract text.]"
-			elif len(doc) < 170:
-				abstract_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract abstract_expand'})
-				abstract_wrapper.text = doc
+			article_abstract = html.XDiv(article_wrapper, "article_abstract")
+			if len(abstract) == 0:
+				html.XFree(article_abstract, "[No abstract text.]")
+			elif len(abstract) < 270:
+				abstract_text = html.XDiv(article_abstract)
+				abstract_text["style"] = "display:block"
+				html.XFree(abstract_text, abstract)
 			else:
-				abstract_teaser = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract', 'style':'display:inline'})
-				abstract_teaser.text = doc[:170]
-				abstract_wrapper = etree.SubElement(article_wrapper, 'div', {'class': 'article_abstract abstract_expand', 'style':'display:none;'})
-				abstract_wrapper.text = doc
-				expand_link = etree.SubElement(article_wrapper, 'span', {'style':'float:right;', 'onclick' : "toggle_abstract('%s')" % PMID})
-				expand_link.text = '(more)'
-			
-			h_spacer = etree.SubElement(articlehtml, 'div', {'class': 'h_spacer'})
-			h_spacer.text = ' '
-			
-			ranked_sorting.append(PMID)
-			title_sorting[PMID] = document['title'][:10]
-			if document['year'].isdigit():
-				date_sorting[PMID] = datetime.date(int(document['year']), 1, 1)
-			else:
-				date_sorting[PMID] = datetime.date(1, 1, 1)
-			journal_sorting[PMID] = document['journal']
+				abstract_teaser = html.XDiv(article_abstract)
+				abstract_teaser["onclick"] = "javascript:toggle_abstract('%s', 'expand')" % PMID
+				html.XFree(abstract_teaser, " ".join([abstract[:270], " ...", '<span style="color: steelblue;">(more)</span>']))
+				
+				abstract_full = html.XDiv(article_abstract)
+				abstract_full["onclick"] = "javascript:toggle_abstract('%s', 'collapse')" % PMID
+				abstract_full["class"] = "hidden"
+				html.XFree(abstract_full, abstract)
 		
-		html = etree.tostring(articlehtml) 
-		html = html[html.find('<' + tagname + '>')+len(tagname)+2:html.find('</' + tagname+ '>')]
-		return html 

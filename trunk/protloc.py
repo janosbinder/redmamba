@@ -83,33 +83,6 @@ class TalkDB:
 		return '<span class="stars">%s</span>' % "".join(["&#9733;"]*stars + ["&#9734;"]*(5-stars))
 	
 
-class xsearchfield(XTag):
-	
-	def __init__(self, parent, action="Search"):
-		XTag.__init__(self, parent, "form")
-		self["action"] = action
-		self["method"] = "post"
-		
-		center = XTag(self, "center")
-		p1 = XP(center)
-		XH3(p1, "Search for diseases, genes and identifiers")
-		XTag(p1, "input", {"type":"text", "name":"query", "size":"100%", "value":"ENSP00000321537"})
-		
-		p2 = XP(center)
-		ra1 = XTag(p2, "input", {"type":"radio", "name":"filter", "value":"any", "checked":"1"})
-		XFree(ra1, "Any")
-		
-		sp1 = XFree(p2, "&nbsp;")	
-		ra2 = XTag(sp1, "input", {"type":"radio", "name":"filter", "value":"disease"})
-		XFree(ra2, "Diseases")
-		
-		sp2 = XFree(p2, "&nbsp;")	
-		ra3 = XTag(sp2, "input", {"type":"radio", "name":"filter", "value":"gene"})
-		XFree(ra3, "Genes")
-		
-		p3 = XP(p2)
-		submit = XTag(p3, "input", {"type":"submit", "value":"submit"})
-		
 
 class HTMLPageCollide(XPage):
 	
@@ -121,34 +94,6 @@ class HTMLPageCollide(XPage):
 		tbl.addrow("Proteins", "2,714")
 		
 
-#class TextminingPairsTable(XDataTable):
-#	
-#	def __init__(self, parent, type1, id1, type2, textmining, dictionary):
-#		XDataTable.__init__(self, parent)
-#		self["width"] = "100%"
-#		
-#		if type2 > 0:
-#			self.addhead("#", "Gene name", "Ensembl ID", "Z-score", "Evidence")
-#		elif type2 == -1:
-#			self.addhead("#", "Drug", "PubChem ID", "Z-score", "Evidence")
-#		elif type2 <= -21 and type2 >= -24:
-#			self.addhead("#", "Gene Ontology", "GO ID", "Z-score", "Evidence")
-#		else:
-#			self.addhead("#", "Name", str(type2), "Z-score", "Evidence")
-#			
-#		i = 1
-#		for row in TalkDB.get_pairs(type1, id1, type2, textmining).getresult():
-#			ty1, idx1, ty2, idx2, evidence, score = ensp = row
-#			if score < 2.4:
-#				break
-#			bestname = TalkDB.get_best_name(ty2, idx2, dictionary)
-#			ensembl = '<a href="http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=%s" target="_blank">%s</a>' % (idx2, idx2)
-#			row = self.addrow(i, "<strong>%s</strong>" % bestname, ensembl, "%.2f" % evidence, TalkDB.get_stars(score))
-#			i += 1
-#		
-#	def __str__(self):
-#		return self.tohtml()
-#
 
 class HTMLPageBrowseDisease(HTMLPageCollide):
 	
@@ -168,32 +113,32 @@ class HTMLPageBrowseDisease(HTMLPageCollide):
 
 		p1 = XP(section.body)
 		if len(term.definition):
-			XH3(p1, "Definition (DOID)")
+			XH4(p1, "Definition (DOID)")
 			XFree(p1, term.definition)
 		
 		if len(term.wikitext):
-			XH3(p1, "Description (Wikipedia)")
+			XH4(p1, "Description (Wikipedia)")
 			XFree(p1, term.wikitext)
 		
 		if term.wiki:
 			XFree(p1, '<br></br><a href="%s" target="wikipedia_tab">Wikipedia</a>' % term.wiki)
 		
 		p2 = XP(section.body)
-		XH3(p2, "Synonyms")
+		XH4(p2, "Synonyms")
 		ul = XTag(p2, "ul")
 		for synonym in term.synonyms:
 			XFree(XTag(ul, "li"), synonym.capitalize())	
 			
 		if len(term.parents):
 			p3 = XP(section.body)
-			XH3(p3, "Derives from")
+			XH4(p3, "Derives from")
 			ul = XTag(p3, "ul")
 			for parent in term.parents:
 				XFree(ul, '<li><a href="/Browse?doid=%s">%s</a></li>' % (parent.id, parent.name.capitalize()))
 		
 		if len(term.children):
 			p5 = XP(section.body)
-			XH3(p5, "Relates to")
+			XH4(p5, "Relates to")
 			ul = XTag(p5, "ul")
 			for child in term.children:
 				XFree(ul, '<li><a href="/Browse?doid=%s">%s</a></li>' % (child.id, child.name.capitalize()))
@@ -201,13 +146,13 @@ class HTMLPageBrowseDisease(HTMLPageCollide):
 		conn_text = pg.connect(host='localhost', user='ljj', dbname='textmining')
 		conn_dict = pg.connect(host='localhost', user='ljj', dbname='dictionary')
 		
-		XH3(section.body, "Literature")
+		XH4(section.body, "Literature")
 		textmining.DocumentsHTML(section.body, conn_text, -26, term.id)
 		
 		XHr(section.body)
 			
 		p6 = XP(section.body)
-		XH3(p6, "Sub-cellular localization")
+		XH4(p6, "Sub-cellular localization")
 		tbl = XDataTable(p6)
 		tbl["width"] = "100%"
 		tbl.addhead("#", "Term", "GO", "Z-score", "Evidence")
@@ -223,10 +168,10 @@ class HTMLPageBrowseDisease(HTMLPageCollide):
 			i += 1
 		
 		p7 = XP(section.body)
-		XH3(p7, "Genes")
+		XH4(p7, "Genes")
 		textmining.PairsHTML(p7, -26, term.id, 9606, conn_text, conn_dict)
 			
-		XH3(p7, "Drugs and Compounds")
+		XH4(p7, "Drugs and Compounds")
 		tbl = XDataTable(p7)
 		textmining.PairsHTML(p7, -26, term.id, -1, conn_text, conn_dict)
 		
@@ -236,52 +181,32 @@ class HTMLPageSearch(HTMLPageCollide):
 	
 	def __init__(self, rest):
 		HTMLPageCollide.__init__(self)
-		if "filter" in rest and "query" in rest:
+			
+		if "query" in rest:
 			self.head.title = "Search result"
-			if filter == "any":
-				pass
-			elif filter == "disease":
-				pass
-			elif filter == "gene":
-				pass
-			XH1(self.frame.content, "Result for: '%s' (%s)" % (rest["query"], rest["filter"]))
-			
-			groups = XTable(self.frame.content)
-			group1 = XTd(XTr(groups))
-			group2 = XTd(XTr(groups))
-			group3 = XTd(XTr(groups))
-			
-			XH2(group1, "Text-mining:")
-			tbl0 = XDataTable(XBox(group1).content)
-			tbl0.addhead("Disease (DOID)", "Score")
-			
 			dictionary = pg.connect(host='localhost', user='ljj', dbname='dictionary')
-			#### TODO: Get preferred names from the dictionary database.
-			
-			knowledge = pg.connect(host='localhost', user='ljj', dbname='textmining')
-			q = knowledge.query("SELECT * FROM pairs WHERE type1=9606 and id1='%s' AND type2=-26 ORDER BY Score DESC LIMIT 30;" % rest["query"])
-			for x in q.getresult():
-				tbl0.addrow(x[3], x[4])
-			
-			XH2(group2, "Valid:")
-			tbl1 = XDataTable(XBox(group2).content)
-			tbl1.addhead("Disease ID", "Evidence", "Stars", "Source")
-			
-			XH2(group3, "Non-valid:")
-			tbl2 = XDataTable(XBox(group3).content)
-			tbl2.addhead("Disease ID", "Evidence", "Stars", "Source")
-			
-			knowledge = pg.connect(host='localhost', user='ljj', dbname='knowledge')
-			q = knowledge.query("SELECT * FROM knowledge WHERE type1=9606 and id1='%s' AND type2=-26 LIMIT 30;" % rest["query"])
-			for x in q.getresult():
-				if x[7] == 't':
-					tbl1.addrow(x[3], x[5], str(x[6]), '<a href="%s">%s</a>' % (x[8], x[4]))
-				else:
-					tbl2.addrow(x[3], x[5], str(x[6]), '<a href="%s">%s</a>' % (x[8], x[4]))
+			search = pg.escape_string(rest["query"])
+			names = dictionary.query("SELECT type, id, name FROM preferred WHERE name ILIKE '%s%%' AND type<>-11;" % search).getresult()
+			if len(names):
+				XH1(self.frame.content, "Result for '%s'" % (rest["query"]))
+				table = XTable(self.frame.content)
+				for type, id, name in names:
+					table.addrow(type, id, name)
+			else:
+				XH1(self.frame.content, "Nothing found for '%s' (%s)" % (rest["query"], rest["filter"]))
+
 		else:
 			self.head.title = "Search diseases and genes"
-			xsearchfield(self.frame.content)
 			
+			form = XTag(self.frame.content, "form")
+			form["action"] = "Search"
+			form["method"] = "post"		
+			center = XTag(form, "center")
+			p1 = XP(center)
+			XH3(p1, "Search for diseases, genes and identifiers")
+			XTag(p1, "input", {"type":"text", "name":"query", "size":"100%", "value":"ABCA17P"})
+			submit = XTag(XP(p1), "input", {"type":"submit", "value":"submit"})
+
 
 class HTMLPageProtein(HTMLPageCollide):
 	
@@ -289,8 +214,8 @@ class HTMLPageProtein(HTMLPageCollide):
 		HTMLPageCollide.__init__(self)
 		self.head.title = "Protein %s" % id
 		box = XBox(self.frame.content)
-		textmining = pg.connect(host='localhost', user='ljj', dbname='textmining')
-		datapage.XTextMiningResult(box.content, textmining, 9606, "ENSP00000332369")
+		conn_text = pg.connect(host="localhost", user="ljj", dbname="textmining")
+		textmining.DocumentsHTML(group2.body, conn_text, 9606, "ENSP00000332369")
 
 
 class HTMLPageDiseaseInfo(HTMLPageCollide):
@@ -304,16 +229,20 @@ class HTMLPageDiseaseInfo(HTMLPageCollide):
 		XSection(group1.body, "Alzheimer's disease", "A dementia that results in progressive memory loss, impaired thinking, disorientation, and changes in personality and mood starting in late middle age and leads in advanced cases to a profound decline in cognitive and physical functioning and is marked histologically by the degeneration of brain neurons especially in the cerebral cortex and by the presence of neurofibrillary tangles and plaques containing beta-amyloid.")
 		
 		group2 = XGroup(self.frame.content, "Text-mining")
-		textmining = pg.connect(host='localhost', user='ljj', dbname='textmining')
-		datapage.XTextMiningResult(group2.body, textmining, 9606, "ENSP00000332369")
+		conn_text = pg.connect(host="localhost", user="ljj", dbname="textmining")
+		textmining.DocumentsHTML(group2.body, conn_text, 9606, "ENSP00000332369")
 
 
+class HTMLTestPage(HTMLPageCollide):
+	
+	def __init__(self):
+		HTMLPageCollide.__init__(self)
+		XFree(self.frame.content, open("test.html").read())
 
 # ==============================================================================
 
 
-class Search(mamba.task.Request):
-	
+class Search(mamba.task.Request):	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
 		page = HTMLPageSearch(rest)
@@ -322,7 +251,6 @@ class Search(mamba.task.Request):
 		
 
 class Protein(mamba.task.Request):
-	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
 		page = HTMLPageProtein(rest["type"], rest["identifier"])
@@ -331,7 +259,6 @@ class Protein(mamba.task.Request):
 		
 		
 class Disease(mamba.task.Request):
-	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
 		page = HTMLPageDiseaseInfo(rest["disease"])
@@ -340,9 +267,14 @@ class Disease(mamba.task.Request):
 
 
 class Browse(mamba.task.Request):
-	
 	def main(self):
 		rest = mamba.task.RestDecoder(self)
 		page = HTMLPageBrowseDisease(rest)
+		reply = mamba.http.HTMLResponse(self, page.tohtml())
+		reply.send()
+
+class Test(mamba.task.Request):
+	def main(self):
+		page = HTMLTestPage()
 		reply = mamba.http.HTMLResponse(self, page.tohtml())
 		reply.send()
