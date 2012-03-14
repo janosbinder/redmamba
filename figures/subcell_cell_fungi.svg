@@ -11,10 +11,9 @@
 <rect title="ex" fill="#ffffff" x="10" y="10" width="940" height="740" />
 <rect title="ex-gradient-filter" fill="url(#grad1)" x="0" y="0" width="960" height="760" />
 <g transform="translate(60, 0)">
-<text title="ex-text" font-family="sans-serif" font-size="20" x="660" y="90" fill="black">Extracellular</text>
+<text title="ex-text" font-family="sans-serif" font-size="20" x="630" y="70" fill="black">Extracellular space</text>
 <ellipse title="cw" fill="#888888" stroke="#000000" stroke-width="2.0" cx="420" cy="370" rx="380" ry="290" />
-<text title="cw-text" font-family="sans-serif" font-size="20" x="130" y="120" fill="black">Cell Wall</text>
-<ellipse title="pm" fill="#ffffff" stroke="#000000" stroke-width="2.0" cx="420" cy="370" rx="365" ry="275" />
+<ellipse title="pm" fill="#cccccc" stroke="#000000" stroke-width="2.0" cx="420" cy="370" rx="365" ry="275" />
 <ellipse title="cy" fill="#ffffff" stroke="#000000" stroke-width="2.0" cx="420" cy="370" rx="350" ry="260" />
 <text title="cy-text" font-family="sans-serif" font-size="20" x="440" y="210" fill="black">Cytosol</text>
 <text title="pm-text" font-family="sans-serif" font-size="20" x="340" y="135" fill="black">Plasma membrane</text>
