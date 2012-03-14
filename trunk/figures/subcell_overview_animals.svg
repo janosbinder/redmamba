@@ -13,15 +13,15 @@
     <text x="7.0108995" y="169.50948" id="text4" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Nucleus</text>
     <text x="23.638958" y="186.87793" id="text6" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Cytosol</text>
     <text x="42.170887" y="204.70274" id="text8" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Cytoskeleton</text>
-    <text x="61.523556" y="222.60793" id="text10" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Peroxisome</text>
-    <text x="78.905266" y="239.98962" id="text12" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Lysosome</text>
+    <text x="61.523556" y="222.60793" id="text10" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Peroxisomes</text>
+    <text x="78.905266" y="239.98962" id="text12" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Lysosomes</text>
     <text x="97.37928" y="257.75656" id="text14" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Endoplasmic Reticulum</text>
     <text x="113.09936" y="275.63123" id="text16" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Golgi apparatus</text>
     <text x="132.52773" y="293.61209" id="text18" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Plasma membrane</text>
-    <text x="149.98555" y="310.36282" id="text20" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Endosome</text>
-    <text x="166.79614" y="329.62497" id="text22" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Vacuole</text>
-    <text x="184.60724" y="346.39871" id="text24" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Extracellular</text>
-    <text x="203.23021" y="363.60751" id="text26" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Mitochondrion</text>
+    <text x="149.98555" y="310.36282" id="text20" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Endosomes</text>
+    <text x="166.79614" y="329.62497" id="text22" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Vacuoles</text>
+    <text x="184.60724" y="346.39871" id="text24" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Extracellular space</text>
+    <text x="203.23021" y="363.60751" id="text26" transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)" style="font-size:14px;fill:#000000;font-family:sans-serif">Mitochondria</text>
     <text x="35" y="135" id="text28" style="font-size:14px;fill:#000000;font-family:sans-serif">Knowledge</text>
     <rect title="knowledge_nu" x="120" y="120" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect30" />
     <rect title="knowledge_cy" x="145" y="120" width="20" height="20" fill="#cccccc" style="stroke:black;stroke-width:2" id="rect32" />
